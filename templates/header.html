@@ -1,0 +1,29 @@
+<div class="navbar mb-2 shadow-lg bg-neutral text-neutral-content rounded-box">
+    <div class="flex-1 px-2 mx-2 lg:flex-none">
+        <span class="text-lg font-bold">MultiDrive</span>
+    </div>
+    <div class="justify-center flex-1 hidden px-2 mx-2 lg:flex">
+        <div class="flex items-stretch">
+            <a class="btn btn-ghost btn-sm rounded-btn" href="{% url 'storage:index' %}">Home</a>
+            <a class="btn btn-ghost btn-sm rounded-btn" href="{% url 'storage:disks' %}">Disks</a>
+            {% if user.is_authenticated %}
+            <div class="dropdown dropdown-end">
+                <div tabindex="0" class="btn btn-sm">{{ user.username }}</div>
+                <ul class="shadow menu dropdown-content bg-base-100 w-52 rounded-box text-black">
+                    <li>
+                        <a href="{% url 'account:logout' %}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+            {% else %}
+            <a href="{% url 'account:login' %}" class="btn btn-ghost btn-sm rounded-btn">Login</a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="flex-none">
+        <button class="btn btn-square btn-ghost"><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></button>
+    </div>
+    <div class="flex-none">
+        <button class="btn btn-square btn-ghost"><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></button>
+    </div>
+</div>

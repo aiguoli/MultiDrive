@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}添加网盘{% endblock %}
+
+{% block content %}
+    <div class="w-1/2 mx-auto">
+        {% include 'header.html' %}
+    </div>
+
+    <div class="container mx-auto w-1/2">
+        <div class="max-w-xs text-sm breadcrumbs">
+            <a class="link link-primary">点击查看教程</a>
+        </div>
+        <form action="{% url 'storage:add_disk' %}" method="post" class="flex flex-col space-y-3">
+            {% csrf_token %}
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">DriveName</span>
+                </label>
+                <input type="text" placeholder="网盘名，随便起" name="name" class="input input-sm input-bordered">
+            </div>
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">DisplayName</span>
+                </label>
+                <input type="text" placeholder="展示在url中，只能是英文" name="display_name" class="input input-sm input-bordered">
+            </div>
+            <div class="pt-2">
+                <label class="label">
+                    <span class="label-text">DriveType</span>
+                </label>
+                <select class="select select-bordered select-sm w-full py-0" id="driveType" onchange="formSwitch()" name="category">
+                    <option disabled="disabled" selected="selected">选择网盘</option>
+                        {% for category in categories %}
+                        <option value="{{ category }}">{{ category }}</option>
+                        {% endfor %}
+                </select>
+            </div>
+            <div class="form-control hidden" id="client_id">
+                <label class="label">
+                    <span class="label-text">ClientID</span>
+                </label>
+                <input type="text" name="client_id" class="input input-sm input-bordered w-full">
+            </div>
+            <div class="form-control hidden" id="client_secret">
+                <label class="label">
+                    <span class="label-text">ClientSecret</span>
+                </label>
+                <input type="text" name="client_secret" class="input input-sm input-bordered w-full">
+            </div>
+            <div class="form-control hidden" id="refresh_token">
+                <label class="label">
+                    <span class="label-text">RefreshToken</span>
+                </label>
+                <input type="text" name="refresh_token" class="input input-sm input-bordered w-full">
+            </div>
+            <div class="form-control hidden" id="root">
+                <label class="label">
+                    <span class="label-text">Root</span>
+                </label>
+                <input type="text" placeholder="要显示的目录，格式为/share，根目录为/" name="root" class="input input-sm input-bordered w-full">
+            </div>
+            <button class="btn btn-block btn-sm" type="submit">提交</button>
+        </form>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        const visible = (element) => {
+            element.style.display = 'inline'
+        }
+        const invisible = (element) => {
+            element.style.display = 'none'
+        }
+        const formSwitch = () => {
+            const driveType = document.getElementById('driveType').value;
+            const root = document.getElementById('root');
+            const refresh_token = document.getElementById('refresh_token');
+            const client_id = document.getElementById('client_id');
+            const client_secret = document.getElementById('client_secret');
+            switch (driveType) {
+                case 'onedrive':
+                    invisible(refresh_token);
+                    visible(client_id);
+                    visible(client_secret);
+                    break;
+                case 'aliyun':
+                    visible(refresh_token);
+                    invisible(client_id);
+                    invisible(client_secret);
+                    break;
+                case 'local':
+                    visible(root);
+                    invisible(refresh_token);
+                    invisible(client_id);
+                    invisible(client_secret);
+                    break;
+                default:
+                    invisible(refresh_token);
+                    invisible(client_id);
+                    invisible(client_secret);
+                    break;
+            }
+        }
+    </script>
+{% endblock %}

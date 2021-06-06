@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ name }} - 文件预览{% endblock %}
+
+{% block content %}
+    <div class="w-3/4 mx-auto">
+        {% include 'header.html' %}
+    </div>
+
+    <div class="container mx-auto w-3/4 flex flex-col justify-center space-y-6">
+        {% if breadcrumbs %}
+        <div class="text-sm breadcrumbs">
+            <ul>
+                {% for breadcrumb in breadcrumbs %}
+                 <li>
+                    <a href="{{ breadcrumb.url }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-4 h-4 mr-2 stroke-current"><!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!---->
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!---->
+                    </svg>
+                    {{ breadcrumb.path }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        <span class="font-lg font-bold">文件下载</span>
+        <div class="flex inline-flex space-x-3">
+            <textarea class="textarea h-auto textarea textarea-bordered w-4/5" id="downloadUrl" readonly>{{ request.scheme }}://{{ request.META.HTTP_HOST }}{{ request.META.PATH_INFO }}</textarea>
+            <div class="w-1/5 flex justify-around">
+                <button class="btn btn-primary" onclick="copyUrl()">Copy</button>
+                <a href="#qrcode" class="btn btn-primary">Qrcode</a>
+                <div id="qrcode" class="modal">
+                    <div class="modal-box">
+                        <div class="flex justify-center" id="qrBox"></div>
+                        <div class="modal-action">
+                          <a href="#" class="btn">Close</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <span class="font-lg font-bold">文件预览</span>
+        <div id="preview" class="card bordered mb-3" data-file-type="{{ file_type }}"></div>
+        <div class="divider"></div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'js/qrcode.js' %}"></script>
+    <script src="{% static 'js/DPlayer.min.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+    <script>
+        new QRCode(document.getElementById("qrBox"), document.getElementById('downloadUrl').value);
+        const visible = (element) => {
+            element.style.display = 'inline'
+        }
+        const invisible = (element) => {
+            element.style.display = 'none'
+        }
+    </script>
+    <script>
+        function copyUrl() {
+            const url = document.getElementById('downloadUrl');
+            url.select();
+            document.execCommand('copy');
+            alert('复制成功！');
+        }
+    </script>
+{% endblock %}

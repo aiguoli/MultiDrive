@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}登录{% endblock %}
+
+{% block content %}
+    <div class="container w-2/4 mx-auto">
+        {% include 'header.html' %}
+        <div class="card">
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-control mx-auto">
+                    <label class="label">
+                        <span class="label-text">Username</span>
+                    </label>
+                    <input type="text" placeholder="username" name="username" class="input input-sm input-bordered">
+                </div>
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">Password</span>
+                    </label>
+                    <input type="text" placeholder="password" name="password" class="input input-bordered input-sm">
+                    <label class="label">
+                        <a href="#" class="label-text-alt">Forgot password?</a>
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-block">Login</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

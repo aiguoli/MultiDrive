@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}访问密码{% endblock %}
+
+{% block content %}
+    <div class="container wrapper">
+        <div class="panel">
+            <div class="panel-head">站点设置了访问密码</div>
+            <form class="panel-body" method="post" action="{% url 'file_manager:index' %}">
+                {% csrf_token %}
+                <label>请输入密码
+                    <input name="password"/>
+                </label>
+                <button type="submit">进入</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

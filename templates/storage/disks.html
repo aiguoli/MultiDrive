@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}所有云盘{% endblock %}
+
+{% block content %}
+    <div class="mx-auto w-3/4">
+        {% include 'header.html' %}
+        <div class="card lg:card-side bordered shadow-lg">
+            <div class="card-body">
+                <h2 class="card-title">
+                    DriveList
+                </h2>
+                {% if drives %}
+                {% for drive in drives %}
+                <ul>
+                    <li class="drive-item mb-3">
+                        <a href="{% url 'storage:list_files' drive.slug %}">{{ drive.name }}</a>
+                    </li>
+                {% endfor %}
+                <a class="btn btn-sm" href="{% url 'storage:add_disk' %}" target="_blank">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4 mr-2 stroke-current" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                      Add
+                </a>
+                {% else %}
+                    <p>空空如也，
+                        <a class="btn btn-sm" href="{% url 'storage:add_disk' %}" target="_blank">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4 mr-2 stroke-current" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                        Add
+                        </a>
+                    </p>
+                {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}

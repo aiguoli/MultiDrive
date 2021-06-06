@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}首页{% endblock %}
+
+{% block content %}
+    <div class="container mx-auto w-3/4">
+        {% include 'header.html' %}
+        <div class="card text-center shadow-2xl">
+            <div class="card-body">
+                <h2 class="card-title">MultiDrive</h2>
+                <p>Manage all your drives in one site!</p>
+                <div class="justify-center card-actions">
+                    <button class="btn btn-outline btn-primary">Enter!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'js/marked.min.js' %}"></script>
+    <script>
+        const introduction = document.getElementById('introduction');
+        introduction.innerHTML = marked(introduction.getAttribute('value'));
+    </script>
+{% endblock %}
