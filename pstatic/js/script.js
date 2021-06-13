@@ -47,8 +47,9 @@ const filePreview = () => {
             const officeView = document.createElement('iframe');
             officeView.src = 'https://view.officeapps.live.com/op/view.aspx?src='+encodeURIComponent(url);
             officeView.width = '100%';
-            officeView.height = '100%';
+            officeView.height = '700rem';
             previewElement.appendChild(officeView);
+            break;
     }
 }
 

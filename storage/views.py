@@ -1,17 +1,18 @@
 from pathlib import PurePath, Path
 
-import requests
 from apscheduler.triggers.interval import IntervalTrigger
 from django.contrib.auth.decorators import login_required
 from django.http import FileResponse
-
-from .models import Drive, Category
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.conf import settings
 from django.urls import reverse
+from django.views.decorators.cache import cache_page
+from django.core.cache import cache
 
-from .drives import onedrive, aliyundrive
-from .utils import od_path_attr, ali_path_attr, file_type, get_aliyundrive_filename, generate_breadcrumbs, path_attr
+from .drives import onedrive, aliyundrive, local
+from .models import Drive, Category
+from .utils import od_path_attr, ali_path_attr, file_type, get_aliyundrive_filename, generate_breadcrumbs, path_attr, \
+    get_readme
 from .timer import scheduler, refresh_onedrive_token_by_id, refresh_aliyundrive_token_by_id
 
 scheduler.start()
@@ -107,108 +108,51 @@ def refresh(request, drive_id):
 def list_files(request, drive_slug, path=''):
     if 'preview' in request.GET:
         return preview(request, path, drive_slug)
-    drive = Drive.objects.filter(slug=drive_slug).first()
+    drive = get_list_or_404(Drive, slug=drive_slug)[0]
     category = drive.category.name.lower()
+    context = {}
 
     if category == 'onedrive':
-        full_path = str(PurePath(drive.root, path))
-        # judge folder or file
-        item = onedrive.get_file(token=drive.access_token, path=full_path)
-        if item.get('file'):
-            return redirect(item.get('@microsoft.graph.downloadUrl'))
-
-        results = onedrive.list_files(token=drive.access_token, path=full_path).get('value')
-        files = [od_path_attr(i, drive_slug, path) for i in results if i.get('file')]
-        dirs = [od_path_attr(j, drive_slug, path) for j in results if j.get('folder')]
-        readme = None
-        for file in files:
-            if file.get('name').lower() == 'readme.md':
-                response = requests.get(file.get('download_url'))
-                response.encoding = 'utf-8'
-                readme = response.text
-        context = {
-            'breadcrumbs': generate_breadcrumbs(drive_slug, path),
-            'dirs': dirs,
-            'files': files,
-            'readme': readme
-        }
-        return render(request, 'storage/list.html', context)
+        absolute_path = str(PurePath(drive.root, path).as_posix())
+        context = onedrive.get_context(drive, path, absolute_path)
     elif category == 'aliyun':
-        if path == '':
-            path = 'root'
-        results = aliyundrive.list_files(token=drive.access_token, drive_id=drive.client_id, path=path)
-        if results is None:
-            result = aliyundrive.get_download_url(token=drive.access_token, drive_id=drive.client_id, file_id=path)
-            return redirect(result.get('url'), Referer='https://www.aliyundrive.com/')
-        dirs = [ali_path_attr(i, drive_slug, i.get('file_id')) for i in results if i.get('type') == 'folder']
-        files = [ali_path_attr(j, drive_slug, j.get('file_id')) for j in results if j.get('type') == 'file']
-        readme = None
-        for file in files:
-            if file.get('name').lower == 'readme.md':
-                readme = requests.get(file.get('download_url')).text
-        context = {
-            'root': reverse('storage:index'),
-            'dirs': dirs,
-            'files': files,
-            'readme': readme,
-        }
-        return render(request, 'storage/list.html', context)
+        context = aliyundrive.get_context(drive, path)
     elif category == 'local':
         root = Path(settings.LOCALE_STORAGE_PATH, drive.root)
         full_path = root / path
 
         if full_path.is_file():
-            if 'preview' in request.GET:
-                return preview(request, drive_slug, path)
             return download(request, full_path)
-        walk_dirs = [i for i in full_path.iterdir()]
-        files = [file for file in walk_dirs if file.is_file()]
-        readme = False
-        for file in files:
-            if file.name.lower() == 'readme.md':
-                readme = file.read_text(encoding='utf8')
-        context = {
-            'breadcrumbs': generate_breadcrumbs(drive_slug, path),
-            'dirs': [path_attr(root, drive_slug, i) for i in walk_dirs if i.is_dir()],
-            'files': [path_attr(root, drive_slug, j) for j in files],
-            'readme': readme
-        }
-        return render(request, 'storage/list.html', context)
+        context = local.get_context(drive, path)
+    if not isinstance(context, dict):
+        return context
+    return render(request, 'storage/list.html', context)
 
 
 def preview(request, path, drive_slug):
-    drive = Drive.objects.filter(slug=drive_slug).first()
+    drive = get_list_or_404(Drive, slug=drive_slug)[0]
     full_path = str(PurePath(drive.root, path))
     category = drive.category.name.lower()
-    context = {}
+    name = prefix = ''
     if category == 'onedrive':
         result = onedrive.get_file(token=drive.access_token, path=full_path)
         name = result.get('name')
         prefix = file_type(name.split('.')[-1])
-        context = {
-            'breadcrumbs': generate_breadcrumbs(drive_slug, path),
-            'name': name,
-            'file_type': prefix
-        }
     elif category == 'aliyun':
-        result = aliyundrive.get_download_url(token=drive.access_token, drive_id=drive.client_id, file_id=path)
+        result = aliyundrive.get_download_url(access_token=drive.access_token, drive_id=drive.client_id, file_id=path)
         url = result.get('url')
         name = get_aliyundrive_filename(url)
         prefix = file_type(name.split('.')[-1])
-        context = {
-            'root': path,
-            'name': name,
-            'file_type': prefix
-        }
     elif category == 'local':
         local_path = Path(settings.LOCALE_STORAGE_PATH, drive.root)
         file_path = local_path / path
-        prefix = file_path.suffix.replace('.', '')
-        context = {
-            'breadcrumbs': generate_breadcrumbs(drive_slug, path),
-            'name': file_path.name,
-            'file_type': file_type(prefix)
-        }
+        name = file_path.name
+        prefix = file_type(file_path.suffix.replace('.', ''))
+    context = {
+        'breadcrumbs': generate_breadcrumbs(drive_slug, path),
+        'name': name,
+        'file_type': prefix
+    }
     return render(request, 'storage/preview.html', context=context)
 
 
@@ -217,3 +161,29 @@ def download(request, path):
     file = open(path, 'rb')
     response = FileResponse(file)
     return response
+
+
+@login_required
+def delete(request):
+    if request.method == 'POST':
+        path = request.GET.get('path')
+        if path:
+            path = path.replace('%2F', '/')
+        drive_slug = request.GET.get('drive')
+        drive = get_list_or_404(Drive, slug=drive_slug)[0]
+        full_path = str(PurePath(drive.root, path))
+        category = drive.category.name.lower()
+
+        if category == 'onedrive':
+            onedrive.delete_file(drive.access_token, path=full_path)
+        elif category == 'aliyun':
+            file_id = request.GET.get('fileId')
+            aliyundrive.temporarily_delete_file(drive.access_token, drive.client_id, file_id)
+        elif category == 'local':
+            local.delete_file(full_path)
+        return redirect(request.META.get('HTTP_REFERER'))
+
+
+@login_required
+def upload(request):
+    pass

@@ -4,6 +4,7 @@ from pathlib import Path, PurePath
 from urllib import parse
 
 import requests
+from django.core.cache import cache
 from django.urls import reverse
 
 
@@ -20,13 +21,13 @@ def utc2local(utc_str):
 def path_attr(root, drive_slug, full_path):
     path_info = full_path.stat()
     basename = full_path.name
-    relative_path = full_path.relative_to(root).as_posix()
+    relative_path = full_path.relative_to(root)
     information = {
         'name': basename,
         'size': convert_size(path_info.st_size),
         'modified': convert_time(path_info.st_mtime),
-        'path': full_path,
-        'url': reverse('storage:list_files', args=(drive_slug, relative_path))
+        'path': relative_path.parent.as_posix(),
+        'url': reverse('storage:list_files', args=(drive_slug, relative_path.as_posix()))
     }
     return information
 
@@ -81,7 +82,9 @@ def get_aliyundrive_filename(url):
 
 def od_path_attr(item, drive_slug, path):
     name = item.get('name')
-    # parent_dir = item.get('parentReference').get('path').replace('/drive/root:', '')
+    parent_dir = item.get('parentReference').get('path').replace('/drive/root:', '')
+    if parent_dir == '':
+        parent_dir = '/'
     path = str(PurePath(path, name).as_posix())
     url = reverse('storage:list_files', args=(drive_slug, path))
     res = {
@@ -89,7 +92,8 @@ def od_path_attr(item, drive_slug, path):
         'size': convert_size(item.get('size')),
         'modified': utc2local(item.get('lastModifiedDateTime')),
         'url': url,
-        'download_url': item.get('@microsoft.graph.downloadUrl')
+        # 'download_url': item.get('@microsoft.graph.downloadUrl'),
+        'path': parent_dir.replace('/', '%2F')
     }
     return res
 
@@ -100,8 +104,10 @@ def ali_path_attr(item, drive_slug, file_id):
     modified = item.get('updated_at')
     res = {
         'name': name,
+        'drive_slug': drive_slug,
         'modified': utc2local(modified),
         'url': url,
+        'file_id': file_id,
         'download_url': item.get('download_url')
     }
     return res
@@ -110,6 +116,7 @@ def ali_path_attr(item, drive_slug, file_id):
 def get_readme(url):
     if url:
         response = requests.get(url)
+        response.encoding = 'utf-8'
         return response.text
     return None
 
@@ -129,3 +136,63 @@ def generate_breadcrumbs(drive_slug, path):
             'url': reverse('storage:list_files', args=(drive_slug, temp[:-1]))
         })
     return res
+
+
+# functions for refreshing onedrive cache
+# still developing...
+def assign(data, indices, value):
+    """
+    Modified value in a specific path in a nested dict.
+    :param data: a dict
+    :param indices: a list that consists of slices of path
+    :param value: assignment
+    :return:
+    """
+    if len(indices) == 1:
+        data[indices[0]] = value
+        return
+    if data.get(indices[0]):
+        next_path = data[indices[0]]
+        if next_path.get('children'):
+            next_path = next_path['children']
+        assign(next_path, indices[1:], value)
+
+
+def lookup(data, indices):
+    if len(indices) == 1:
+        return data[indices[0]]
+    if data.get(indices[0]):
+        next_path = data[indices[0]]
+        if next_path.get('children'):
+            next_path = next_path['children']
+        return lookup(next_path, indices[1:])
+
+
+def clean_data(data):
+    """
+    :param data: comes from onedrive.list_file.get('value')
+    :return: content could be insert to children of cache
+    """
+    content = []
+    for item in data:
+        content.append({
+            'name': item.get('name'),
+            'type': list(item.keys())[-1],
+            'modified': item.get('lastModifiedDateTime'),
+            'size': item.get('size'),
+            'children': []
+        })
+    return content
+
+
+def assign_onedrive_cache(data, drive_slug, full_path):
+    # data是onedrive.list_file.get('value')
+    # the format of full_path is '/path/to/file'
+    new_children = clean_data(data)
+    if full_path == '/':
+        path_list = ['root']
+    else:
+        path_list = full_path.split('/')[1:]
+    new_cache = cache.get(drive_slug)
+    assign(new_cache, path_list, new_children)
+    cache.set(drive_slug, new_cache)

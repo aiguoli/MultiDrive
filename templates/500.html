@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}500{% endblock %}
+
+{% block content %}
+    <div class="hero min-h-screen" style="background-image: url(&quot;https://picsum.photos/1600/1400&quot;);">
+        <div class="hero-overlay bg-opacity-60"></div>
+        <div class="text-center hero-content text-neutral-content">
+            <div class="max-w-md">
+                <h1 class="mb-5 text-5xl font-bold">500</h1>
+                <p class="mb-5">Something wrong with our server, please contact to the admin.</p>
+                <button onclick="window.history.back()" class="btn btn-primary">Go back</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
