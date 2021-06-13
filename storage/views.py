@@ -11,8 +11,7 @@ from django.core.cache import cache
 
 from .drives import onedrive, aliyundrive, local
 from .models import Drive, Category
-from .utils import od_path_attr, ali_path_attr, file_type, get_aliyundrive_filename, generate_breadcrumbs, path_attr, \
-    get_readme
+from .utils import file_type, get_aliyundrive_filename, generate_breadcrumbs
 from .timer import scheduler, refresh_onedrive_token_by_id, refresh_aliyundrive_token_by_id
 
 scheduler.start()

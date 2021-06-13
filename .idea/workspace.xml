@@ -2,21 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5ec19975-4d2b-40d9-92b9-6ed9aa92a79d" name="默认变更列表" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/multiDrive.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/multiDrive.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MultiDrive/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/MultiDrive/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pstatic/js/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/pstatic/js/script.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/drives/aliyundrive.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/drives/aliyundrive.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/drives/local.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/drives/local.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/drives/onedrive.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/drives/onedrive.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/storage/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/account/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/account/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/storage/add_disk.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/storage/add_disk.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/storage/disks.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/storage/disks.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/storage/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/storage/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/storage/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/storage/list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/storage/preview.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/storage/preview.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -239,7 +231,7 @@
       <updated>1622774028095</updated>
       <workItem from="1622774030415" duration="49401000" />
       <workItem from="1622991855235" duration="18317000" />
-      <workItem from="1623149608224" duration="53784000" />
+      <workItem from="1623149608224" duration="57208000" />
     </task>
     <servers />
   </component>
