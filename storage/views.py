@@ -98,11 +98,6 @@ def callback(request):
     return redirect(reverse('storage:disks'))
 
 
-def refresh(request, drive_id):
-    refresh_onedrive_token_by_id(drive_id)
-    return redirect(reverse('filemanager:index'))
-
-
 # File operation
 def list_files(request, drive_slug, path=''):
     if 'preview' in request.GET:
@@ -112,8 +107,12 @@ def list_files(request, drive_slug, path=''):
     context = {}
 
     if category == 'onedrive':
-        absolute_path = str(PurePath(drive.root, path).as_posix())
-        context = onedrive.get_context(drive, path, absolute_path)
+        if cache.get(drive.slug+path):
+            context = cache.get(drive.slug+path)
+        else:
+            absolute_path = str(PurePath(drive.root, path).as_posix())
+            context = onedrive.get_context(drive, path, absolute_path)
+            cache.set(drive.slug+path, context)
     elif category == 'aliyun':
         context = aliyundrive.get_context(drive, path)
     elif category == 'local':

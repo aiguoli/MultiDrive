@@ -8,7 +8,6 @@ urlpatterns = [
     path('callback/', callback, name='callback'),
     path('disks/', disks, name='disks'),
     path('delete/', delete, name='delete'),
-    path('refresh/<int:drive_id>', refresh, name='refresh'),
     path('<str:drive_slug>/', list_files, name='list_files'),
     path('<str:drive_slug>/<path:path>/', list_files, name='list_files'),
 ]
