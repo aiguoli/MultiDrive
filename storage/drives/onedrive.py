@@ -116,3 +116,10 @@ def get_context(drive, relative_path, absolute_path):
         'drive_slug': drive.slug
     }
     return context
+
+
+def get_password(token, path):
+    res = get_file(token, path+'/private')
+    download_url = res.get('@microsoft.graph.downloadUrl')
+    if download_url:
+        return requests.get(download_url).text

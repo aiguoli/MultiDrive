@@ -3,16 +3,15 @@ from pathlib import PurePath, Path
 from apscheduler.triggers.interval import IntervalTrigger
 from django.contrib.auth.decorators import login_required
 from django.http import FileResponse
-from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
 from django.urls import reverse
-from django.views.decorators.cache import cache_page
 from django.core.cache import cache
 
 from .drives import onedrive, aliyundrive, local
 from .models import Drive, Category
 from .utils import file_type, get_aliyundrive_filename, generate_breadcrumbs
-from .timer import scheduler, refresh_onedrive_token_by_id, refresh_aliyundrive_token_by_id
+from .task import scheduler, refresh_onedrive_token_by_id, refresh_aliyundrive_token_by_id
 
 scheduler.start()
 
@@ -56,8 +55,8 @@ def add_disk(request):
             authenticate_url = onedrive.get_login_code(client_id=client_id, redirect_uri=redirect_uri)
             return redirect(authenticate_url)
         elif category == 'aliyun':
-            refresh_token = request.POST.get('refresh_token')
-            tokens = aliyundrive.refresh_token(refresh_token)
+            ali_refresh_token = request.POST.get('refresh_token')
+            tokens = aliyundrive.refresh_token(ali_refresh_token)
             user_info = aliyundrive.get_user_info(token=tokens.get('access_token'))
             ali = Drive(name=name, access_token=tokens.get('access_token'), refresh_token=tokens.get('refresh_token'),
                         client_id=user_info.get('default_drive_id'), slug=slug)
@@ -80,6 +79,10 @@ def add_disk(request):
     return render(request, 'storage/add_disk.html', context)
 
 
+def tutorial(request):
+    return render(request, 'storage/tutorial.html')
+
+
 def callback(request):
     code = request.GET.get('code')
     client_id = request.session.get('client_id')
@@ -98,21 +101,33 @@ def callback(request):
     return redirect(reverse('storage:disks'))
 
 
+@login_required
+def refresh_token(request, drive_id):
+    drive = get_object_or_404(Drive, pk=drive_id)
+    category = drive.category.name.lower()
+    if category == 'onedrive':
+        refresh_onedrive_token_by_id(drive_id)
+    elif category == 'aliyun':
+        refresh_aliyundrive_token_by_id(drive_id)
+    return redirect(request.META.get('HTTP_REFERER'))
+
+
 # File operation
 def list_files(request, drive_slug, path=''):
     if 'preview' in request.GET:
         return preview(request, path, drive_slug)
-    drive = get_list_or_404(Drive, slug=drive_slug)[0]
+    drive = get_object_or_404(Drive, slug=drive_slug)
     category = drive.category.name.lower()
     context = {}
 
     if category == 'onedrive':
-        if cache.get(drive.slug+path):
-            context = cache.get(drive.slug+path)
+        absolute_path = str(PurePath(drive.root, path).as_posix())
+        cache_name = drive.slug+'-'+absolute_path
+        if cache.get(cache_name):
+            context = cache.get(cache_name)
         else:
-            absolute_path = str(PurePath(drive.root, path).as_posix())
             context = onedrive.get_context(drive, path, absolute_path)
-            cache.set(drive.slug+path, context)
+            cache.set(cache_name, context)
     elif category == 'aliyun':
         context = aliyundrive.get_context(drive, path)
     elif category == 'local':
@@ -122,13 +137,15 @@ def list_files(request, drive_slug, path=''):
         if full_path.is_file():
             return download(request, full_path)
         context = local.get_context(drive, path)
+
+    # redirect
     if not isinstance(context, dict):
         return context
     return render(request, 'storage/list.html', context)
 
 
 def preview(request, path, drive_slug):
-    drive = get_list_or_404(Drive, slug=drive_slug)[0]
+    drive = get_object_or_404(Drive, slug=drive_slug)
     full_path = str(PurePath(drive.root, path))
     category = drive.category.name.lower()
     name = prefix = ''
@@ -168,7 +185,7 @@ def delete(request):
         if path:
             path = path.replace('%2F', '/')
         drive_slug = request.GET.get('drive')
-        drive = get_list_or_404(Drive, slug=drive_slug)[0]
+        drive = get_object_or_404(Drive, slug=drive_slug)
         full_path = str(PurePath(drive.root, path))
         category = drive.category.name.lower()
 
@@ -185,3 +202,13 @@ def delete(request):
 @login_required
 def upload(request):
     pass
+
+
+@login_required
+def clear_cache(request, drive_slug, path):
+    drive = get_object_or_404(Drive, slug=drive_slug)
+    absolute_path = str(PurePath(drive.root, path).as_posix())
+    cache_name = drive_slug+'-'+absolute_path
+    if cache.get(cache_name):
+        cache.delete(cache_name)
+    return redirect(reverse('storage:list_files', args=(drive_slug, path)))

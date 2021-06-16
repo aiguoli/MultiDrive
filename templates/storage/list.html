@@ -8,7 +8,7 @@
         {% include 'header.html' %}
     </div>
 
-    <div class="container mx-auto w-full sm:w-3/4 flex flex-col justify-center space-y-3">
+    <div class="container mx-auto w-full sm:w-3/4 flex flex-col justify-center space-y-4">
         {% if breadcrumbs %}
         <div class="text-sm breadcrumbs">
             <ul>
@@ -92,7 +92,7 @@
             </table>
         </div>
         {% if readme %}
-        <div class="card shadow-lg">
+        <div class="card shadow-lg bg-base-100">
             <div class="card-body">
                 <h2 class="card-title">README</h2>
                 <div id="readme" value="{{ readme }}"></div>
@@ -100,7 +100,7 @@
         </div>
         {% endif %}
         {% if user.is_authenticated %}
-        <div class="card shadow-lg">
+        <div class="card shadow-lg bg-base-100">
             <div class="card-body">
                 <h2 class="card-title">UPLOAD</h2>
                 <form method="post">
@@ -112,9 +112,36 @@
         {% endif %}
         <div class="divider"></div>
     </div>
+
+    <div class="fixed bottom-6 right-6">
+        <ul class="menu w-16 py-1 shadow-lg bg-base-100 rounded-box">
+            <li>
+                <a onclick="backToTop()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+                    </svg>
+                </a>
+            </li>
+            {% if user.is_authenticated %}
+            <li>
+                <a href="{{ request.scheme }}://{{ request.get_host }}/clear{{ request.path }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+
 {% endblock %}
 
 {% block js %}
     <script src="{% static 'js/marked.min.js' %}"></script>
     <script src="{% static 'js/script.js' %}"></script>
+    <script>
+        const backToTop = () => {
+            window.scrollTo({top:0,behavior:"smooth"});
+        }
+    </script>
 {% endblock %}

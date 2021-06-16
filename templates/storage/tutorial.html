@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}云盘添加教程{% endblock %}
+
+{% block content %}
+    <div class="mx-auto w-full sm:w-3/4">
+        {% include 'header.html' %}
+        <div class="card shadow-lg">
+            <div class="card-body">
+                <h2 class="card-title">OneDrive</h2>
+                <p>1.在<a href="https://aka.ms/AppRegistrations/?referrer=https%3A%2F%2Fdev.onedrive.com"
+                         class="link" target="_blank">这里</a>注册一个app</p>
+                <p>2.记录下clientId和clientSecret</p>
+                <p>3.点击<b class="text-red-500">终结点</b>,添加<b class="text-red-500">https://domain/callback</b>并保存</p>
+                <p>4.在<a href="{% url 'storage:add_disk' %}" class="link" target="_blank">这个页面</a>添加网盘</p>
+            </div>
+        </div>
+        <div class="card shadow-lg">
+            <div class="card-body">
+                <h2 class="card-title">AliyunDrive</h2>
+                <p>1.进入<a href="https://www.aliyundrive.com/sign/in" class="link" target="_blank">阿里云盘登录页面</a></p>
+                <p>2.登录，在F12-Networks找到login.do那条，复制<b class="text-red-500">bizExt</b>然后base64解码</p>
+                <p>3.用解码后的refresh_token在<a href="{% url 'storage:add_disk' %}" class="link" target="_blank">这个页面</a>添加网盘</p>
+                <div class="divider"></div>
+                <div class="alert alert-warning">
+                    <div class="flex-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-6 h-6 mx-2 stroke-current"><!---->
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!---->
+                    </svg>
+                    <label>其他方法获得的token会导致文件无法预览</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card shadow-lg">
+            <div class="card-body">
+                <h2 class="card-title">GoogleDrive</h2>
+                <p>先这样再那样</p>
+            </div>
+        </div>
+
+{% endblock %}
