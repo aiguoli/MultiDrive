@@ -9,6 +9,7 @@ MultiDrive是一款云盘管理程序，支持像oneindex那样列出云盘文�
 - [x] 基本图片、文本、视频预览
 - [x] Redis缓存，加快列表速度
 - [x] 分享指定目录
+- [x] 将部分格式的office文件转换为PDF
 
 # 支持网盘
 - [x] OneDrive
