@@ -212,3 +212,10 @@ def clear_cache(request, drive_slug, path):
     if cache.get(cache_name):
         cache.delete(cache_name)
     return redirect(reverse('storage:list_files', args=(drive_slug, path)))
+
+
+def convert_file(request, drive_slug, path):
+    drive = get_object_or_404(Drive, slug=drive_slug)
+    absolute_path = str(PurePath(drive.root, path).as_posix())
+    url = onedrive.convert_file(drive.access_token, absolute_path)
+    return redirect(url)

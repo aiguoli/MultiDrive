@@ -1,3 +1,5 @@
+import json
+
 import requests
 from django.shortcuts import redirect
 
@@ -12,6 +14,7 @@ login_token_url = '/common/oauth2/v2.0/token'
 list_dir_url = '/me/drive/root:/{path}:/children'
 file_url = '/me/drive/root:/{path}'
 upload_url = '/me/drive/root:/{path}:/content'
+convert_url = '/me/drive/root:/{path}:/content?format=pdf'
 
 headers = {'Content-Type': 'application/x-www-form-urlencoded'}
 
@@ -82,6 +85,34 @@ def delete_file(token, path):
     }
     response = requests.delete(url, headers=auth_headers)
     return response.status_code
+
+
+def create_folder(token, folder_name, path):
+    url = graph_url + list_dir_url.format(path=path)
+    auth_headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+    }
+    data = {
+        'name': folder_name,
+        'folder': {},
+        '@microsoft.graph.conflictBehavior': 'fail'
+    }
+    response = requests.post(url, headers=auth_headers, data=json.dumps(data)).json()
+    return response
+
+
+def convert_file(token, path):
+    # csv、doc、docx、odp、ods、odt、pot、potm、potx、pps、ppsx、ppsxm、ppt、pptm、pptx、rtf、xls、xlsx
+    # convert documents end with prefix listed above to PDF
+    # if convert successfully, it will return a download url
+    url = graph_url + convert_url.format(path=path)
+    auth_headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+    }
+    response = requests.get(url, headers=auth_headers)
+    return response.url
 
 
 def upload_file(token, upload_path, file_path):
