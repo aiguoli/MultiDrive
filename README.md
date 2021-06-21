@@ -19,11 +19,17 @@ MultiDrive是一款云盘管理程序，支持像oneindex那样列出云盘文�
 - [ ] FTP
 - [ ] 七牛 / 又拍
 
+# 安装方法
+```shell
+pip install -r requirements.txt
+```
+
 # 截图
 ![disks](./screenshot/disks.png)
 ![list](./screenshot/list.png)
 ![add](./screenshot/add.png)
 ![preview](./screenshot/preview.png)
+![tutorial](./screenshot/tutorial.png)
 
 # TODO 
 - [ ] 一个更好看的后台
@@ -33,6 +39,7 @@ MultiDrive是一款云盘管理程序，支持像oneindex那样列出云盘文�
 - [ ] 文件密码
 - [ ] 离线下载
 - [ ] 媒体播放器
+- [ ] 一键部署脚本
 - [ ] 在线预览更多文件类型 
 
 # 开发状态

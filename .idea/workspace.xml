@@ -3,13 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="5ec19975-4d2b-40d9-92b9-6ed9aa92a79d" name="默认变更列表" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/account/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/drives/onedrive.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/drives/onedrive.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/drives/googledrive.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/drives/googledrive.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/storage/disks.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/storage/disks.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/storage/preview.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/storage/preview.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/uploads/20f9d2ffce82d218013e4d5dfad0ef27.djcache" beforeDir="false" afterPath="$PROJECT_DIR$/uploads/20f9d2ffce82d218013e4d5dfad0ef27.djcache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/uploads/39bcab3a109a3d38aae9240ef87a0d25.djcache" beforeDir="false" afterPath="$PROJECT_DIR$/uploads/39bcab3a109a3d38aae9240ef87a0d25.djcache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/uploads/68bc2caeed594dd40ccfdb3cbc07a9dc.djcache" beforeDir="false" afterPath="$PROJECT_DIR$/uploads/68bc2caeed594dd40ccfdb3cbc07a9dc.djcache" afterDir="false" />
@@ -27,12 +24,17 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Python Script" />
         <option value="HTML File" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="thawne &lt;thawne2018@gmail.com&gt;" />
+      </list>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitSEFilterConfiguration">
@@ -105,7 +107,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="local" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="googledrive" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="multiDrive" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -118,7 +120,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/storage/drives/local.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/storage/drives/googledrive.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -219,11 +221,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.googledrive" />
         <item itemvalue="Python.onedrive" />
         <item itemvalue="Python.aliyundrive" />
         <item itemvalue="Python.scratch" />
         <item itemvalue="Python.utils" />
-        <item itemvalue="Python.local" />
       </list>
     </recent_temporary>
   </component>
@@ -240,7 +242,17 @@
       <workItem from="1623149608224" duration="62518000" />
       <workItem from="1623670318345" duration="22319000" />
       <workItem from="1623929930443" duration="3375000" />
+      <workItem from="1623985853264" duration="5024000" />
+      <workItem from="1624273369913" duration="772000" />
     </task>
+    <task id="LOCAL-00001" summary=":sparkles:Convert files in a specific format to PDF in just one click">
+      <created>1623986138288</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1623986138288</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -258,7 +270,12 @@
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value=":sparkles:Convert files in a specific format to PDF in just one click" />
+    <option name="LAST_COMMIT_MESSAGE" value=":sparkles:Convert files in a specific format to PDF in just one click" />
+  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/MultiDrive$googledrive.coverage" NAME="googledrive 覆盖结果" MODIFIED="1624273829868" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/storage/drives" />
     <SUITE FILE_PATH="coverage/MultiDrive$local.coverage" NAME="local 覆盖结果" MODIFIED="1622781625729" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/storage/drives" />
     <SUITE FILE_PATH="coverage/MultiDrive$scratch.coverage" NAME="scratch 覆盖结果" MODIFIED="1623422041212" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/MultiDrive$onedrive.coverage" NAME="onedrive 覆盖结果" MODIFIED="1623856168223" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/storage/drives" />
