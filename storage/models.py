@@ -37,6 +37,24 @@ class Drive(models.Model):
         return self.name
 
 
+class File(models.Model):
+    name = models.CharField(verbose_name='文件名', max_length=256)
+    file_id = models.CharField(verbose_name='文件ID', max_length=128, unique=True)
+    size = models.IntegerField(verbose_name='文件大小', help_text='单位：B', blank=True, null=True)
+    password = models.CharField(verbose_name='文件夹密码', max_length=256, blank=True)
+    is_dir = models.BooleanField(verbose_name='是否是文件夹', default=False)
+    parent_path = models.CharField(verbose_name='父目录', max_length=256)
+
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
+    drive = models.ForeignKey('Drive', on_delete=models.CASCADE)
+
+    created = models.DateTimeField('创建时间', default=timezone.now)
+    updated = models.DateTimeField('更新时间', auto_now=True)
+
+    def is_file(self):
+        return not self.is_dir
+
+
 class WebSettings(models.Model):
     """网站设置"""
     title = models.CharField(verbose_name='网站标题', max_length=30, blank=True)
