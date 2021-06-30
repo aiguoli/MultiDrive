@@ -4,8 +4,6 @@ import json
 base_url = 'https://accounts.google.com/o/oauth2/v2/auth'
 auth_url = 'https://accounts.google.com/o/oauth2/v2/auth'
 
-client_id = '216440066284-4rc0jvuh02q8hfd5fgev4ris01rqq8ei.apps.googleusercontent.com'
-client_secret = '5RIx-WERt77b2OD_DDXZDBju'
 
 def get_login_code(client_id, redirect_uri):
     auth_data = {
