@@ -8,8 +8,7 @@ from django.conf import settings
 from django.urls import reverse
 from django.core.cache import cache
 
-from .drives import onedrive, aliyundrive, local
-from .drives.onedrive import save_files_to_db
+from .drives import onedrive, aliyundrive, local, picker
 from .models import Drive, Category, File
 from .utils import file_type, get_aliyundrive_filename, generate_breadcrumbs, utc2local
 from .task import scheduler, refresh_onedrive_token_by_id, refresh_aliyundrive_token_by_id
@@ -122,53 +121,24 @@ def list_files(request, drive_slug, path=''):
 
     drive = get_object_or_404(Drive, slug=drive_slug)
     absolute_path = PurePosixPath(drive.root, path)
-    parent_path = absolute_path.parent
     category = drive.category.name.lower()
 
-    if category != 'local':
+    if category == 'local':
+        root = Path(settings.LOCALE_STORAGE_PATH, drive.root)
+        full_path = root / path
+        if full_path.is_file():
+            return download(request, full_path)
+        context = local.get_context(drive, path)
+    else:
         files = File.objects.filter(drive_id=drive.id, parent_path=absolute_path)
         if not files:
-            # redirect to download url or request new data
-            # the following steps will be performed whether the folder is empty or not
-            # maybe a File named null could indicates that the directory is empty
-            if category == 'onedrive':
-                item = onedrive.get_file(token=drive.access_token, path=absolute_path)
-                if item.get('file'):
-                    return redirect(item.get('@microsoft.graph.downloadUrl'))
-                new_files = onedrive.list_files(token=drive.access_token, path=absolute_path).get('value')
-                onedrive.save_files_to_db(new_files, drive.id)
-            elif category == 'aliyun':
-                if path == '':
-                    path = 'root'
-                parent_file = File.objects.filter(parent_path=parent_path, name=absolute_path.name,
-                                                  drive_id=drive.id).first()
-                if parent_file:
-                    item = aliyundrive.get_download_url(access_token=drive.access_token, drive_id=drive.client_id,
-                                                        file_id=parent_file.file_id)
-                    if item.get('url'):
-                        return redirect(item.get('url'), Referer='https://www.aliyundrive.com/')
-                new_files = aliyundrive.list_files(access_token=drive.access_token, drive_id=drive.client_id,
-                                                   path=parent_file.file_id if parent_file else 'root')
-                aliyundrive.save_files_to_db(new_files, drive.id, absolute_path)
-            # This query statement may cause database performance problems, so it may be replaced by parsing 'new_files'
-            # TODO: delete this stupid query
-            files = File.objects.filter(drive_id=drive.id, parent_path=absolute_path)
+            files = picker.list_files(drive.id, absolute_path)
         context = {
             'breadcrumbs': generate_breadcrumbs(drive_slug, absolute_path),
             'files': files,
             'drive_slug': drive_slug,
             'root': path
         }
-    else:
-        root = Path(settings.LOCALE_STORAGE_PATH, drive.root)
-        full_path = root / path
-        if full_path.is_file():
-            return download(request, full_path)
-        context = local.get_context(drive, path)
-
-    # redirect
-    if not isinstance(context, dict):
-        return context
     return render(request, 'storage/list.html', context)
 
 
@@ -281,7 +251,7 @@ def refresh_db(request, drive_slug, path):
             i.delete()
     elif category == 'aliyun':
         parent_file_id = get_object_or_404(File, parent_path=absolute_path.parent, name=absolute_path.name).file_id
-        new_files = aliyundrive.list_files(drive.access_token, drive_id=drive.client_id, path=parent_file_id)
+        new_files = aliyundrive.list_files(drive.access_token, drive_id=drive.client_id, parent_file_id=parent_file_id)
         if new_files:
             for new_file in new_files:
                 old_file = files.filter(file_id=new_file.get('file_id')).first()

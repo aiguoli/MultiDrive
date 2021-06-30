@@ -63,7 +63,7 @@ def list_files(token, path):
         'Authorization': 'Bearer ' + token
     }
     response = requests.get(url, headers=auth_headers).json()
-    return response
+    return response.get('value')
 
 
 def get_file(token, path):
@@ -141,13 +141,14 @@ def save_files_to_db(files, drive_id):
         parent_id = None
         if parent:
             parent_id = parent.id
-        bulk_create_files(files, parent_path, drive_id, parent_id)
+        new_files = bulk_create_files(files, parent_path, drive_id, parent_id)
+        return new_files
 
 
 def bulk_create_files(files, parent_path, drive_id, parent_id=None):
-    new_files = []
+    bulk_files = []
     for file in files:
-        new_files.append(File(
+        bulk_files.append(File(
             name=file.get('name'),
             file_id=file.get('id'),
             size=file.get('size'),
@@ -158,6 +159,7 @@ def bulk_create_files(files, parent_path, drive_id, parent_id=None):
             parent_id=parent_id,
             drive_id=drive_id
         ))
-    File.objects.bulk_create(new_files)
+    File.objects.bulk_create(bulk_files)
+    return bulk_files
 
 

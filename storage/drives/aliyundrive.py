@@ -46,7 +46,7 @@ def get_user_info(token):
     return response
 
 
-def list_files(access_token, drive_id, path='root'):
+def list_files(access_token, drive_id, parent_file_id='root'):
     url = base_url + list_dir_url
     headers = {
         'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ def list_files(access_token, drive_id, path='root'):
     }
     data = {
         'drive_id': drive_id,
-        'parent_file_id': path
+        'parent_file_id': str(parent_file_id)
     }
     response = requests.post(url, headers=headers, data=json.dumps(data)).json()
     return response.get('items')
@@ -97,7 +97,7 @@ def temporarily_delete_file(access_token, drive_id, file_id):
 def get_context(drive, path):
     if path == '':
         path = 'root'
-    results = list_files(access_token=drive.access_token, drive_id=drive.client_id, path=path)
+    results = list_files(access_token=drive.access_token, drive_id=drive.client_id, parent_file_id=path)
     if results is None:
         result = get_download_url(access_token=drive.access_token, drive_id=drive.client_id, file_id=path)
         return redirect(result.get('url'), Referer='https://www.aliyundrive.com/')
@@ -137,5 +137,4 @@ def save_files_to_db(files, drive_id, parent_path):
                 parent_id=parent.id if parent else None
             ))
         File.objects.bulk_create(new_files)
-
-
+        return new_files
