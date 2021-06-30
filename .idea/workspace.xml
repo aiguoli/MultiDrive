@@ -4,9 +4,15 @@
     <list default="true" id="5ec19975-4d2b-40d9-92b9-6ed9aa92a79d" name="默认变更列表" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/drives/aliyundrive.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/drives/aliyundrive.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/storage/drives/googledrive.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/drives/googledrive.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/drives/onedrive.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/drives/onedrive.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/storage/disks.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/storage/disks.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/storage/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/storage/list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/uploads/20f9d2ffce82d218013e4d5dfad0ef27.djcache" beforeDir="false" afterPath="$PROJECT_DIR$/uploads/20f9d2ffce82d218013e4d5dfad0ef27.djcache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/uploads/39bcab3a109a3d38aae9240ef87a0d25.djcache" beforeDir="false" afterPath="$PROJECT_DIR$/uploads/39bcab3a109a3d38aae9240ef87a0d25.djcache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/uploads/68bc2caeed594dd40ccfdb3cbc07a9dc.djcache" beforeDir="false" afterPath="$PROJECT_DIR$/uploads/68bc2caeed594dd40ccfdb3cbc07a9dc.djcache" afterDir="false" />

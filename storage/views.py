@@ -1,16 +1,17 @@
-from pathlib import PurePath, Path
+from pathlib import PurePath, Path, PurePosixPath
 
 from apscheduler.triggers.interval import IntervalTrigger
 from django.contrib.auth.decorators import login_required
-from django.http import FileResponse
+from django.http import FileResponse, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
 from django.urls import reverse
 from django.core.cache import cache
 
 from .drives import onedrive, aliyundrive, local
-from .models import Drive, Category
-from .utils import file_type, get_aliyundrive_filename, generate_breadcrumbs
+from .drives.onedrive import save_files_to_db
+from .models import Drive, Category, File
+from .utils import file_type, get_aliyundrive_filename, generate_breadcrumbs, utc2local
 from .task import scheduler, refresh_onedrive_token_by_id, refresh_aliyundrive_token_by_id
 
 scheduler.start()
@@ -116,24 +117,51 @@ def refresh_token(request, drive_id):
 def list_files(request, drive_slug, path=''):
     if 'preview' in request.GET:
         return preview(request, path, drive_slug)
-    drive = get_object_or_404(Drive, slug=drive_slug)
-    category = drive.category.name.lower()
-    context = {}
+    if 'refresh' in request.GET:
+        return refresh_db(request, drive_slug, path)
 
-    if category == 'onedrive':
-        absolute_path = str(PurePath(drive.root, path).as_posix())
-        cache_name = drive.slug+'-'+absolute_path
-        if cache.get(cache_name):
-            context = cache.get(cache_name)
-        else:
-            context = onedrive.get_context(drive, path, absolute_path)
-            cache.set(cache_name, context)
-    elif category == 'aliyun':
-        context = aliyundrive.get_context(drive, path)
-    elif category == 'local':
+    drive = get_object_or_404(Drive, slug=drive_slug)
+    absolute_path = PurePosixPath(drive.root, path)
+    parent_path = absolute_path.parent
+    category = drive.category.name.lower()
+
+    if category != 'local':
+        files = File.objects.filter(drive_id=drive.id, parent_path=absolute_path)
+        if not files:
+            # redirect to download url or request new data
+            # the following steps will be performed whether the folder is empty or not
+            # maybe a File named null could indicates that the directory is empty
+            if category == 'onedrive':
+                item = onedrive.get_file(token=drive.access_token, path=absolute_path)
+                if item.get('file'):
+                    return redirect(item.get('@microsoft.graph.downloadUrl'))
+                new_files = onedrive.list_files(token=drive.access_token, path=absolute_path).get('value')
+                onedrive.save_files_to_db(new_files, drive.id)
+            elif category == 'aliyun':
+                if path == '':
+                    path = 'root'
+                parent_file = File.objects.filter(parent_path=parent_path, name=absolute_path.name,
+                                                  drive_id=drive.id).first()
+                if parent_file:
+                    item = aliyundrive.get_download_url(access_token=drive.access_token, drive_id=drive.client_id,
+                                                        file_id=parent_file.file_id)
+                    if item.get('url'):
+                        return redirect(item.get('url'), Referer='https://www.aliyundrive.com/')
+                new_files = aliyundrive.list_files(access_token=drive.access_token, drive_id=drive.client_id,
+                                                   path=parent_file.file_id if parent_file else 'root')
+                aliyundrive.save_files_to_db(new_files, drive.id, absolute_path)
+            # This query statement may cause database performance problems, so it may be replaced by parsing 'new_files'
+            # TODO: delete this stupid query
+            files = File.objects.filter(drive_id=drive.id, parent_path=absolute_path)
+        context = {
+            'breadcrumbs': generate_breadcrumbs(drive_slug, absolute_path),
+            'files': files,
+            'drive_slug': drive_slug,
+            'root': path
+        }
+    else:
         root = Path(settings.LOCALE_STORAGE_PATH, drive.root)
         full_path = root / path
-
         if full_path.is_file():
             return download(request, full_path)
         context = local.get_context(drive, path)
@@ -146,7 +174,7 @@ def list_files(request, drive_slug, path=''):
 
 def preview(request, path, drive_slug):
     drive = get_object_or_404(Drive, slug=drive_slug)
-    full_path = str(PurePath(drive.root, path))
+    full_path = PurePosixPath(drive.root, path)
     category = drive.category.name.lower()
     name = prefix = ''
     if category == 'onedrive':
@@ -154,7 +182,9 @@ def preview(request, path, drive_slug):
         name = result.get('name')
         prefix = file_type(name.split('.')[-1])
     elif category == 'aliyun':
-        result = aliyundrive.get_download_url(access_token=drive.access_token, drive_id=drive.client_id, file_id=path)
+        file = get_object_or_404(File, parent_path=full_path.parent, name=full_path.name, drive_id=drive.id)
+        result = aliyundrive.get_download_url(access_token=drive.access_token, drive_id=drive.client_id,
+                                              file_id=file.file_id)
         url = result.get('url')
         name = get_aliyundrive_filename(url)
         prefix = file_type(name.split('.')[-1])
@@ -212,6 +242,71 @@ def clear_cache(request, drive_slug, path):
     if cache.get(cache_name):
         cache.delete(cache_name)
     return redirect(reverse('storage:list_files', args=(drive_slug, path)))
+
+
+@login_required
+def refresh_db(request, drive_slug, path):
+    drive = get_object_or_404(Drive, slug=drive_slug)
+    absolute_path = PurePosixPath(drive.root, path)
+    category = drive.category.name.lower()
+    files = File.objects.filter(parent_path=absolute_path, drive_id=drive.id)
+    delete_files = list(files)
+
+    if category == 'onedrive':
+        new_files = onedrive.list_files(drive.access_token, path=path).get('value')
+        if new_files:
+            parent = File.objects.filter(file_id=new_files[0].get('parentReference').get('id')).first()
+            for new_file in new_files:
+                old_file = files.filter(file_id=new_file.get('id')).first()
+                if old_file:
+                    old_file.name = new_file.get('name')
+                    old_file.size = new_file.get('size')
+                    old_file.updated = utc2local(new_file.get('lastModifiedDateTime'))
+                    old_file.save()
+                    delete_files.remove(old_file)
+                else:
+                    file = File(
+                        name=new_file.get('name'),
+                        file_id=new_file.get('id'),
+                        size=new_file.get('size'),
+                        created=utc2local(new_file.get('createdDateTime')),
+                        updated=utc2local(new_file.get('lastModifiedDateTime')),
+                        is_dir=True if new_file.get('folder') else False,
+                        parent_path=absolute_path,
+                        parent_id=parent.id if parent else None,
+                        drive_id=drive.id
+                    )
+                    file.save()
+        for i in delete_files:
+            i.delete()
+    elif category == 'aliyun':
+        parent_file_id = get_object_or_404(File, parent_path=absolute_path.parent, name=absolute_path.name).file_id
+        new_files = aliyundrive.list_files(drive.access_token, drive_id=drive.client_id, path=parent_file_id)
+        if new_files:
+            for new_file in new_files:
+                old_file = files.filter(file_id=new_file.get('file_id')).first()
+                if old_file:
+                    old_file.name = new_file.get('name')
+                    old_file.size = new_file.get('size')
+                    old_file.updated = utc2local(new_file.get('updated_at'))
+                    old_file.save()
+                    delete_files.remove(old_file)
+                else:
+                    file = File(
+                        name=new_file.get('name'),
+                        file_id=new_file.get('id'),
+                        size=new_file.get('size'),
+                        created=utc2local(new_file.get('createdDateTime')),
+                        updated=utc2local(new_file.get('lastModifiedDateTime')),
+                        is_dir=True if new_file.get('folder') else False,
+                        parent_path=absolute_path,
+                        parent_id=parent_file_id,
+                        drive_id=drive.id
+                    )
+                    file.save()
+        for i in delete_files:
+            i.delete()
+    return redirect(request.META.get('HTTP_REFERER'))
 
 
 def convert_file(request, drive_slug, path):

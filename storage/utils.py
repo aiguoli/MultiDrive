@@ -1,6 +1,6 @@
 import datetime
 import re
-from pathlib import Path, PurePath
+from pathlib import Path, PurePath, PurePosixPath
 from urllib import parse
 
 import requests
@@ -92,7 +92,6 @@ def od_path_attr(item, drive_slug, path):
         'size': convert_size(item.get('size')),
         'modified': utc2local(item.get('lastModifiedDateTime')),
         'url': url,
-        # 'download_url': item.get('@microsoft.graph.downloadUrl'),
         'path': parent_dir.replace('/', '%2F')
     }
     return res
@@ -122,18 +121,19 @@ def get_readme(url):
 
 
 def generate_breadcrumbs(drive_slug, path):
+    path = PurePosixPath(path)
     home = {'path': 'Home', 'url': reverse('storage:list_files', args=(drive_slug,))}
-    if path == '':
+    if str(path) == '/':
         return [home]
 
-    path_slice = path.split('/')
+    path_slice = path.parts
     temp = ''
     res = [home]
-    for i in path_slice:
-        temp += i + '/'
+    for i in path_slice[1:]:
+        temp += '/' + i
         res.append({
             'path': i,
-            'url': reverse('storage:list_files', args=(drive_slug, temp[:-1]))
+            'url': reverse('storage:list_files', args=(drive_slug, temp))
         })
     return res
 
