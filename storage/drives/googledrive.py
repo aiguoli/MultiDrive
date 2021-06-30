@@ -15,8 +15,4 @@ def get_login_code(client_id, redirect_uri):
         'state': 'sth that could be converted'
     }
     response = requests.get(auth_url, params=json.dumps(auth_data)).json()
-    print(response)
     return response
-
-
-get_login_code(client_id, client_secret)

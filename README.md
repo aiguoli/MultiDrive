@@ -18,6 +18,7 @@ MultiDrive是一款云盘管理程序，支持像oneindex那样列出云盘文�
 - [ ] GoogleDrive
 - [ ] FTP
 - [ ] 七牛 / 又拍
+- [ ] Oracle
 
 # 安装方法
 ```shell
@@ -34,6 +35,7 @@ pip install -r requirements.txt
 # TODO 
 - [ ] 一个更好看的后台
 - [ ] 文件上传
+- [ ] 网盘搬家
 - [ ] 在线编辑
 - [ ] REST api
 - [ ] 文件密码
@@ -43,4 +45,8 @@ pip install -r requirements.txt
 - [ ] 在线预览更多文件类型 
 
 # 开发状态
-匆匆忙忙抽空写的，代码质量不高，大概就是个能用的水平，慢慢更新ing
+还在开发完善，熟悉Django的可以搭建起来尝尝鲜...
+
+# 常见问题
+> Q：目录突然空白，之前还是好的  
+A：尝试在`/disks`刷新token，检查后台定时任务状态

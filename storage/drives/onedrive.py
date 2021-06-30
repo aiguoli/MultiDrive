@@ -1,9 +1,11 @@
 import json
+import time
 
 import requests
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
+from storage.models import File
 
-from storage.utils import get_readme, od_path_attr, generate_breadcrumbs
+from storage.utils import get_readme, od_path_attr, generate_breadcrumbs, utc2local
 
 graph_url = 'https://graph.microsoft.com/v1.0'
 
@@ -126,31 +128,36 @@ def upload_file(token, upload_path, file_path):
     return response
 
 
-def get_context(drive, relative_path, absolute_path):
-    # judge folder or file
-    item = get_file(token=drive.access_token, path=absolute_path)
-    if item.get('file'):
-        return redirect(item.get('@microsoft.graph.downloadUrl'))
+def save_files_to_db(files, drive_id):
+    # save onedrive files to database
+    # sync for now because django doesn't support this very well
+    if files:
+        parent_file_information = files[0].get('parentReference')
+        parent_file_id = parent_file_information.get('id')
+        parent_path = parent_file_information.get('path').split(':')[-1]
+        if parent_path == '':
+            parent_path = '/'
+        parent = File.objects.filter(file_id=parent_file_id).first()
+        parent_id = None
+        if parent:
+            parent_id = parent.id
+        bulk_create_files(files, parent_path, drive_id, parent_id)
 
-    results = list_files(token=drive.access_token, path=absolute_path).get('value')
-    files = [od_path_attr(i, drive.slug, relative_path) for i in results if i.get('file')]
-    dirs = [od_path_attr(j, drive.slug, relative_path) for j in results if j.get('folder')]
-    readme = None
+
+def bulk_create_files(files, parent_path, drive_id, parent_id=None):
+    new_files = []
     for file in files:
-        if file.get('name').lower() == 'readme.md':
-            readme = get_readme(file.get('download_url'))
-    context = {
-        'breadcrumbs': generate_breadcrumbs(drive.slug, relative_path),
-        'dirs': dirs,
-        'files': files,
-        'readme': readme,
-        'drive_slug': drive.slug
-    }
-    return context
+        new_files.append(File(
+            name=file.get('name'),
+            file_id=file.get('id'),
+            size=file.get('size'),
+            created=utc2local(file.get('createdDateTime')),
+            updated=utc2local(file.get('lastModifiedDateTime')),
+            is_dir=True if file.get('folder') else False,
+            parent_path=parent_path,
+            parent_id=parent_id,
+            drive_id=drive_id
+        ))
+    File.objects.bulk_create(new_files)
 
 
-def get_password(token, path):
-    res = get_file(token, path+'/private')
-    download_url = res.get('@microsoft.graph.downloadUrl')
-    if download_url:
-        return requests.get(download_url).text
