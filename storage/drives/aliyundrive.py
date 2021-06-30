@@ -4,7 +4,8 @@ import json
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from storage.utils import ali_path_attr, get_readme
+from storage.models import File
+from storage.utils import ali_path_attr, get_readme, utc2local
 
 base_url = 'https://api.aliyundrive.com/v2'
 
@@ -55,8 +56,7 @@ def list_files(access_token, drive_id, path='root'):
         'drive_id': drive_id,
         'parent_file_id': path
     }
-    data = json.dumps(data)
-    response = requests.post(url, headers=headers, data=data).json()
+    response = requests.post(url, headers=headers, data=json.dumps(data)).json()
     return response.get('items')
 
 
@@ -115,3 +115,27 @@ def get_context(drive, path):
         'drive_slug': drive.slug
     }
     return context
+
+
+def save_files_to_db(files, drive_id, parent_path):
+    if files:
+        if parent_path == 'root':
+            parent_path = '/'
+        parent_file_id = files[0].get('parent_file_id')
+        parent = File.objects.filter(file_id=parent_file_id).first()
+        new_files = []
+        for file in files:
+            new_files.append(File(
+                name=file.get('name'),
+                file_id=file.get('file_id'),
+                created=utc2local(file.get('created_at')),
+                updated=utc2local(file.get('updated_at')),
+                drive_id=drive_id,
+                size=file.get('size'),
+                is_dir=True if file.get('type') == 'folder' else False,
+                parent_path=parent_path,
+                parent_id=parent.id if parent else None
+            ))
+        File.objects.bulk_create(new_files)
+
+
