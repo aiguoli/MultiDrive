@@ -2,7 +2,7 @@ from pathlib import PurePath, Path, PurePosixPath
 
 from apscheduler.triggers.interval import IntervalTrigger
 from django.contrib.auth.decorators import login_required
-from django.http import FileResponse, HttpResponse, JsonResponse
+from django.http import FileResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
 from django.urls import reverse
@@ -136,7 +136,8 @@ def list_files(request, drive_slug, path=''):
         context = {
             'breadcrumbs': generate_breadcrumbs(drive_slug, absolute_path),
             'files': files,
-            'drive_slug': drive_slug,
+            'drive_id': drive.id,
+            'drive_slug': drive.slug,
             'root': path
         }
     return render(request, 'storage/list.html', context)
@@ -179,23 +180,9 @@ def download(request, path):
 
 
 @login_required
-def delete(request):
+def delete(request, drive_id, file_id):
     if request.method == 'POST':
-        path = request.GET.get('path')
-        if path:
-            path = path.replace('%2F', '/')
-        drive_slug = request.GET.get('drive')
-        drive = get_object_or_404(Drive, slug=drive_slug)
-        full_path = str(PurePath(drive.root, path))
-        category = drive.category.name.lower()
-
-        if category == 'onedrive':
-            onedrive.delete_file(drive.access_token, path=full_path)
-        elif category == 'aliyun':
-            file_id = request.GET.get('fileId')
-            aliyundrive.temporarily_delete_file(drive.access_token, drive.client_id, file_id)
-        elif category == 'local':
-            local.delete_file(full_path)
+        picker.delete_file(drive_id, file_id)
         return redirect(request.META.get('HTTP_REFERER'))
 
 
@@ -223,7 +210,7 @@ def refresh_db(request, drive_slug, path):
     delete_files = list(files)
 
     if category == 'onedrive':
-        new_files = onedrive.list_files(drive.access_token, path=path).get('value')
+        new_files = onedrive.list_files(drive.access_token, path=path)
         if new_files:
             parent = File.objects.filter(file_id=new_files[0].get('parentReference').get('id')).first()
             for new_file in new_files:

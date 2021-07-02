@@ -61,7 +61,7 @@
                     <td>{{ file.size|filesizeformat }}</td>
                     {% if user.is_authenticated %}
                     <td>
-                        <form method="post" action="{% url 'storage:delete' %}?path={{ file.path }}/{{ file.name }}&drive={{ drive_slug }}&fileId={{ file.file_id }}">
+                        <form method="post" action="{% url 'storage:delete' drive_id file.id %}">
                             {% csrf_token %}
                             <button class="btn btn-sm btn-error" type="submit" onclick="return confirm('Are you sure?');">
                                 <span class="text-white">删除</span>

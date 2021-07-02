@@ -31,17 +31,16 @@ def get_context(drive, path):
     root = Path(settings.LOCALE_STORAGE_PATH, drive.root)
     full_path = root / path
 
-    walk_dirs = [i for i in full_path.iterdir()]
-    files = [file for file in walk_dirs if file.is_file()]
+    walk_files = [i for i in full_path.iterdir()]
     readme = False
-    for file in files:
+    for file in walk_files:
         if file.name.lower() == 'readme.md':
             readme = file.read_text(encoding='utf8')
     context = {
+        'drive_id': drive.id,
         'drive_slug': drive.slug,
         'breadcrumbs': generate_breadcrumbs(drive.slug, path),
-        'dirs': [path_attr(root, drive.slug, i) for i in walk_dirs if i.is_dir()],
-        'files': [path_attr(root, drive.slug, j) for j in files],
-        'readme': readme
+        'files': [path_attr(root, drive.slug, i) for i in walk_files],
+        'readme': readme,
     }
     return context

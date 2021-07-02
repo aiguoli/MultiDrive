@@ -26,7 +26,8 @@ def path_attr(root, drive_slug, full_path):
         'name': basename,
         'size': convert_size(path_info.st_size),
         'modified': convert_time(path_info.st_mtime),
-        'path': relative_path.parent.as_posix(),
+        'is_dir': True if full_path.is_dir() else False,
+        'id': relative_path.as_posix(),
         'url': reverse('storage:list_files', args=(drive_slug, relative_path.as_posix()))
     }
     return information

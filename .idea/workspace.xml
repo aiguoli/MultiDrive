@@ -3,10 +3,12 @@
   <component name="ChangeListManager">
     <list default="true" id="5ec19975-4d2b-40d9-92b9-6ed9aa92a79d" name="默认变更列表" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/drives/aliyundrive.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/drives/aliyundrive.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/drives/onedrive.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/drives/onedrive.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/drives/local.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/drives/local.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/storage/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/storage/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/storage/list.html" afterDir="false" />
     </list>
     <list id="4fe54702-2eb3-4294-8d85-dfdab7ac5c3a" name=":recycle:Files will be saved to database instead of Redis. Fix some bugs." comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -148,7 +150,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="scratch" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="rename" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="multiDrive" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -156,12 +158,12 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$APPLICATION_CONFIG_DIR$/scratches" />
+      <option name="WORKING_DIRECTORY" value="$USER_HOME$/Desktop/gay" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$APPLICATION_CONFIG_DIR$/scratches/scratch.py" />
+      <option name="SCRIPT_NAME" value="$USER_HOME$/Desktop/gay/rename.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -218,11 +220,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.rename" />
         <item itemvalue="Python.aliyundrive" />
         <item itemvalue="Python.onedrive" />
         <item itemvalue="Python.script" />
         <item itemvalue="Python.googledrive" />
-        <item itemvalue="Python.scratch" />
       </list>
     </recent_temporary>
   </component>
@@ -249,6 +251,8 @@
       <workItem from="1624868274377" duration="16396000" />
       <workItem from="1624964457494" duration="11745000" />
       <workItem from="1625050605116" duration="640000" />
+      <workItem from="1625186784430" duration="2681000" />
+      <workItem from="1625207240816" duration="4892000" />
     </task>
     <task id="LOCAL-00001" summary=":sparkles:Convert files in a specific format to PDF in just one click">
       <created>1623986138288</created>
@@ -292,7 +296,14 @@
       <option name="project" value="LOCAL" />
       <updated>1625053328854</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary=":art:Remove some redundant code">
+      <created>1625066273891</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1625066273891</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -315,7 +326,8 @@
     <MESSAGE value=":bug:Fix a minor bug" />
     <MESSAGE value="remove something unnecessary" />
     <MESSAGE value=":bug:Fix a bug" />
-    <option name="LAST_COMMIT_MESSAGE" value=":bug:Fix a bug" />
+    <MESSAGE value=":art:Remove some redundant code" />
+    <option name="LAST_COMMIT_MESSAGE" value=":art:Remove some redundant code" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/MultiDrive$googledrive.coverage" NAME="googledrive 覆盖结果" MODIFIED="1624273829868" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/storage/drives" />
@@ -323,6 +335,7 @@
     <SUITE FILE_PATH="coverage/MultiDrive$scratch.coverage" NAME="scratch 覆盖结果" MODIFIED="1623422041212" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/MultiDrive$script.coverage" NAME="script 覆盖结果" MODIFIED="1624501877882" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/downloader" />
     <SUITE FILE_PATH="coverage/MultiDrive$onedrive.coverage" NAME="onedrive 覆盖结果" MODIFIED="1624539560271" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/storage/drives" />
+    <SUITE FILE_PATH="coverage/MultiDrive$rename.coverage" NAME="rename 覆盖结果" MODIFIED="1625189377229" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/Desktop/gay" />
     <SUITE FILE_PATH="coverage/MultiDrive$utils.coverage" NAME="utils 覆盖结果" MODIFIED="1622804262368" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/storage" />
     <SUITE FILE_PATH="coverage/MultiDrive$aliyundrive.coverage" NAME="aliyundrive 覆盖结果" MODIFIED="1624779487275" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/storage/drives" />
   </component>
