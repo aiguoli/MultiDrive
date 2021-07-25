@@ -22,7 +22,11 @@ MultiDrive是一款云盘管理程序，支持像oneindex那样列出云盘文�
 
 # 安装方法
 ```shell
-pip install -r requirements.txt
+pip3 install -r requirements.txt
+pip3 install uwsgi
+```
+```shell
+uwsgi --http :8080 --chdir /path/to/your/MultiDrive -w multi.wsgi
 ```
 
 # 截图
@@ -42,10 +46,14 @@ pip install -r requirements.txt
 - [ ] 离线下载
 - [ ] 媒体播放器
 - [ ] 一键部署脚本
+- [ ] 文件中转站，类似于transfer.office.com
 - [ ] 在线预览更多文件类型 
+- [ ] 定时备份
 
 # 开发状态
 还在开发完善，熟悉Django的可以搭建起来尝尝鲜...
+
+偶尔更新，逐步完善中
 
 # 常见问题
 > Q：目录突然空白，之前还是好的  

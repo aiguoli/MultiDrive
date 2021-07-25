@@ -68,6 +68,8 @@ def add_disk(request):
                 id='refresh_aliyundrive_token_every_3600s',
                 args=(ali.id,)
             )
+        elif category == 'baidu':
+            print('fuck u')
         elif category == 'local':
             drive = Drive(name=name, root=settings.LOCALE_STORAGE_PATH, slug=slug)
             drive.category = cate
@@ -131,6 +133,10 @@ def list_files(request, drive_slug, path=''):
         context = local.get_context(drive, path)
     else:
         files = File.objects.filter(drive_id=drive.id, parent_path=absolute_path)
+        parent_folder = File.objects.filter(drive_id=drive.id, parent_path=absolute_path.parent,
+                                            name=absolute_path.name).first()
+        if parent_folder and parent_folder.password:
+            print('password!')
         if not files:
             files = picker.list_files(drive.id, absolute_path)
         context = {
@@ -271,3 +277,14 @@ def convert_file(request, drive_slug, path):
     absolute_path = str(PurePath(drive.root, path).as_posix())
     url = onedrive.convert_file(drive.access_token, absolute_path)
     return redirect(url)
+
+
+def change_file_password(request):
+    if request.method == 'POST':
+        file_id = request.POST.get('fileId')
+        password = request.POST.get('password')
+        file = get_object_or_404(File, pk=file_id)
+
+        file.password = password
+        file.save()
+        return redirect(request.META.get('HTTP_REFERER'))

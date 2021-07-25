@@ -61,7 +61,13 @@
                     <td>{{ file.size|filesizeformat }}</td>
                     {% if user.is_authenticated %}
                     <td>
-                        <form method="post" action="{% url 'storage:delete' drive_id file.id %}">
+                        {% if file.is_dir %}
+                            <a class="btn btn-sm btn-primary"
+                               href="#password" title="修改文件夹密码"
+                               data-file-id="{{ file.id }}"
+                               onclick="changeFileId(this)">加密</a>
+                        {% endif %}
+                        <form method="post" action="{% url 'storage:delete' drive_id file.id %}" class="inline">
                             {% csrf_token %}
                             <button class="btn btn-sm btn-error" type="submit" onclick="return confirm('Are you sure?');">
                                 <span class="text-white">删除</span>
@@ -117,6 +123,22 @@
         </ul>
     </div>
 
+    <div id="password" class="modal">
+        <div class="modal-box">
+            <form method="post" action="{% url 'storage:change_file_password' %}">
+                {% csrf_token %}
+                <label>输入新密码：
+                    <input name="password">
+                </label>
+                <input name="fileId" id="fileId" hidden>
+                <div class="modal-action">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <a href="#" class="btn">Close</a>
+                </div>
+            </form>
+      </div>
+    </div>
+
 {% endblock %}
 
 {% block js %}
@@ -125,6 +147,11 @@
     <script>
         const backToTop = () => {
             window.scrollTo({top:0,behavior:"smooth"});
+        }
+    </script>
+    <script>
+        const changeFileId = (e) => {
+            document.getElementById('fileId').value = e.getAttribute('data-file-id');
         }
     </script>
 {% endblock %}

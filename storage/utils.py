@@ -18,6 +18,10 @@ def utc2local(utc_str):
     return res.strftime('%Y-%m-%d %H:%M:%S')
 
 
+def timestamp2datetime(timestamp):
+    return datetime.datetime.fromtimestamp(timestamp)
+
+
 def path_attr(root, drive_slug, full_path):
     path_info = full_path.stat()
     basename = full_path.name
