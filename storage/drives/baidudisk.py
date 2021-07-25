@@ -130,11 +130,3 @@ def save_files_to_db(files, drive_id, parent_path, parent_id=None):
             ))
         File.objects.bulk_create(new_files)
 
-
-client_id = 'rwQj7tAsu4IB5uahL0rFeNubZtgTcwgl'
-client_secret = '4uMacyWvZFUGvxG0w4uo4UYXyqz7ghK3'
-redirect_uri = 'https://www.952722.xyz/callback'
-token = '121.1e753c1ee0ecf90b3c1f865a6cb07ee7.YHPMDuLqOpg2RqxhUebug_ut3IdSPKwisvLoEWS.niz3Gw'
-res = list_files(token, path='/901')
-print(res)
-

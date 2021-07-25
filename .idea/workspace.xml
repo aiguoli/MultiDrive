@@ -10,25 +10,11 @@
       <change afterPath="$PROJECT_DIR$/downloader/admin.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/downloader/apps.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/downloader/migrations/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/downloader/models.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/downloader/script.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/downloader/tests.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/downloader/views.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/install.sh" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/screenshot/tutorial.png" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/storage/drives/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/storage/drives/baidudisk.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/storage/drives/picker.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/local/Readme.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MultiDrive/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/MultiDrive/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MultiDrive/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/MultiDrive/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/storage/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/storage/list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/drives/baidudisk.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/drives/baidudisk.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/uploads/20f9d2ffce82d218013e4d5dfad0ef27.djcache" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/uploads/2dfccbc5c2ffec7ff788874f941bc6f4.djcache" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/uploads/2e745499727cccfff07136e87ce6b558.djcache" beforeDir="false" />
@@ -36,7 +22,6 @@
       <change beforePath="$PROJECT_DIR$/uploads/68bc2caeed594dd40ccfdb3cbc07a9dc.djcache" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/uploads/7bb49bab17ab3a8d45ad5f9b278df9ce.djcache" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/uploads/8300e2d8891af21c0bf6008007c70f98.djcache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/b0376e8254be4f7962af8a02c413b36b.djcache" beforeDir="false" />
     </list>
     <list id="4fe54702-2eb3-4294-8d85-dfdab7ac5c3a" name=":recycle:Files will be saved to database instead of Redis. Fix some bugs." comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -290,7 +275,7 @@
       <workItem from="1626488303813" duration="3032000" />
       <workItem from="1626522646764" duration="4303000" />
       <workItem from="1626609801143" duration="1197000" />
-      <workItem from="1627087380198" duration="11847000" />
+      <workItem from="1627087380198" duration="12523000" />
     </task>
     <task id="LOCAL-00001" summary=":sparkles:Convert files in a specific format to PDF in just one click">
       <created>1623986138288</created>
@@ -355,7 +340,14 @@
       <option name="project" value="LOCAL" />
       <updated>1627219236163</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary=":lipstick:Modern admin panel">
+      <created>1627219416351</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1627219416351</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
