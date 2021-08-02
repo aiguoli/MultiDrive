@@ -1,11 +1,9 @@
 import json
-import time
 
 import requests
-from django.shortcuts import redirect, get_object_or_404
 from storage.models import File
 
-from storage.utils import get_readme, od_path_attr, generate_breadcrumbs, utc2local
+from storage.utils import utc2local
 
 graph_url = 'https://graph.microsoft.com/v1.0'
 
@@ -32,25 +30,25 @@ def get_login_code(client_id, redirect_uri):
     return response.url
 
 
-def get_login_token(code, client_id, client_secret):
+def get_login_token(code, client_id, client_secret, redirect_uri):
     token_data = {
         'client_id': client_id,
         'client_secret': client_secret,
         'grant_type': 'authorization_code',
-        'redirect_uri': 'http://localhost:8000/callback',
+        'redirect_uri': redirect_uri,
         'code': code
     }
     response = requests.post(login_base_url+login_token_url, headers=headers, data=token_data).json()
     return response
 
 
-def refresh_token(token, client_id, client_secret):
+def get_refresh_token(refresh_token, client_id, client_secret):
     token_data = {
         'client_id': client_id,
         'redirect_uri': 'http://localhost:8000/callback',
         'client_secret': client_secret,
-        'refresh_token': token,
-        'grant_type': 'refresh_token'
+        'get_refresh_token': refresh_token,
+        'grant_type': 'get_refresh_token'
     }
     response = requests.post(login_base_url+login_token_url, headers=headers, data=token_data).json()
     return response

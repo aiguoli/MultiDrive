@@ -1,7 +1,4 @@
-from pathlib import PurePosixPath
-
 import requests
-import json
 
 from storage.models import File
 from storage.utils import timestamp2datetime
@@ -30,7 +27,8 @@ def get_authorization_code(client_id, redirect_uri):
     return response.url
 
 
-def get_access_token(client_id, client_secret, redirect_uri, code):
+def get_access_token(code, client_id, client_secret, redirect_uri):
+    # expired in 30 days
     url = base_auth_url + access_token_url
     params = {
         'grant_type': 'authorization_code',
@@ -38,6 +36,18 @@ def get_access_token(client_id, client_secret, redirect_uri, code):
         'client_id': client_id,
         'client_secret': client_secret,
         'redirect_uri': redirect_uri,
+    }
+    response = requests.get(url, params=params).json()
+    return response
+
+
+def get_refresh_token(refresh_token, client_id, client_secret):
+    url = base_auth_url + access_token_url
+    params = {
+        'grant_type': 'get_refresh_token',
+        'get_refresh_token': refresh_token,
+        'client_id': client_id,
+        'client_secret': client_secret
     }
     response = requests.get(url, params=params).json()
     return response

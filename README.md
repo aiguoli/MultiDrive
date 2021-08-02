@@ -15,6 +15,7 @@ MultiDrive是一款云盘管理程序，支持像oneindex那样列出云盘文�
 - [x] OneDrive
 - [x] AliyunDrive
 - [x] 本地存储
+- [x] 百度网盘
 - [ ] GoogleDrive
 - [ ] FTP
 - [ ] 七牛 / 又拍

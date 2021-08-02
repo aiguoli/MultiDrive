@@ -7,6 +7,24 @@ from storage.models import Drive, File
 from storage.drives import onedrive, aliyundrive, local, baidudisk
 
 
+def get_authorization_code(category, client_id, redirect_uri):
+    authorize_url = None
+    if category == 'onedrive':
+        authorize_url = onedrive.get_login_code(client_id, redirect_uri)
+    elif category == 'baidu':
+        authorize_url = baidudisk.get_authorization_code(client_id, redirect_uri)
+    return authorize_url
+
+
+def get_access_token(category, code, client_id, client_secret, redirect_uri):
+    tokens = None
+    if category == 'onedrive':
+        tokens = onedrive.get_login_token(code, client_id, client_secret, redirect_uri)
+    elif category == 'baidu':
+        tokens = baidudisk.get_access_token(code, client_id, client_secret, redirect_uri)
+    return tokens
+
+
 def list_files(drive_id, absolute_path):
     drive = get_object_or_404(Drive, pk=drive_id)
     category = drive.category.name.lower()

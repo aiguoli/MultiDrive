@@ -11,7 +11,7 @@ from django.core.cache import cache
 from .drives import onedrive, aliyundrive, local, picker
 from .models import Drive, Category, File
 from .utils import file_type, get_aliyundrive_filename, generate_breadcrumbs, utc2local
-from .task import scheduler, refresh_onedrive_token_by_id, refresh_aliyundrive_token_by_id
+from .task import scheduler, refresh_onedrive_token_by_id, refresh_aliyundrive_token_by_id, refresh_baidudisk_token_by_id
 
 scheduler.start()
 
@@ -36,29 +36,29 @@ def add_disk(request):
     if request.method == 'POST':
         name = request.POST.get('name')
         category = request.POST.get('category')
-        cate = Category.objects.filter(name=category).first()
+        cate = get_object_or_404(Category, name=category)
         slug = request.POST.get('display_name')
-        if category == 'onedrive':
+        if category == 'onedrive' or category == 'baidu':
             client_id = request.POST.get('client_id')
             client_secret = request.POST.get('client_secret')
-            if cate is None:
-                return redirect(reverse('storage:add_disk'))
-            one = Drive(name=name, client_id=client_id, client_secret=client_secret, slug=slug)
-            one.category = cate
-            one.save()
-            request.session['onedrive_id'] = one.id
+            drive = Drive(name=name, client_id=client_id, client_secret=client_secret, slug=slug)
+            drive.category = cate
+            drive.save()
+            request.session['drive_id'] = drive.id
             request.session['client_id'] = client_id
             request.session['client_secret'] = client_secret
+            request.session['category'] = category
             redirect_uri = request.build_absolute_uri(reverse('storage:callback'))
             if settings.DEBUG:
                 redirect_uri = 'http://localhost:8000/callback'
-            authenticate_url = onedrive.get_login_code(client_id=client_id, redirect_uri=redirect_uri)
+            authenticate_url = picker.get_authorization_code(category=category, client_id=client_id,
+                                                             redirect_uri=redirect_uri)
             return redirect(authenticate_url)
         elif category == 'aliyun':
-            ali_refresh_token = request.POST.get('refresh_token')
+            ali_refresh_token = request.POST.get('get_refresh_token')
             tokens = aliyundrive.refresh_token(ali_refresh_token)
             user_info = aliyundrive.get_user_info(token=tokens.get('access_token'))
-            ali = Drive(name=name, access_token=tokens.get('access_token'), refresh_token=tokens.get('refresh_token'),
+            ali = Drive(name=name, access_token=tokens.get('access_token'), refresh_token=tokens.get('get_refresh_token'),
                         client_id=user_info.get('default_drive_id'), slug=slug)
             ali.category = cate
             ali.save()
@@ -68,8 +68,6 @@ def add_disk(request):
                 id='refresh_aliyundrive_token_every_3600s',
                 args=(ali.id,)
             )
-        elif category == 'baidu':
-            print('fuck u')
         elif category == 'local':
             drive = Drive(name=name, root=settings.LOCALE_STORAGE_PATH, slug=slug)
             drive.category = cate
@@ -89,17 +87,31 @@ def callback(request):
     code = request.GET.get('code')
     client_id = request.session.get('client_id')
     client_secret = request.session.get('client_secret')
-    tokens = onedrive.get_login_token(code=code, client_id=client_id, client_secret=client_secret)
-    one = get_object_or_404(Drive, pk=request.session.get('onedrive_id'))
-    one.access_token = tokens.get('access_token')
-    one.refresh_token = tokens.get('refresh_token')
-    one.save()
-    scheduler.add_job(
-        refresh_onedrive_token_by_id,
-        trigger=IntervalTrigger(seconds=1800),
-        id='refresh_onedrive_token_every_1800s',
-        args=(one.id,)
-    )
+    category = request.session.get('category')
+    redirect_uri = request.build_absolute_uri(reverse('storage:callback'))
+    if settings.DEBUG:
+        redirect_uri = 'http://localhost:8000/callback'
+
+    tokens = picker.get_access_token(category=category, code=code, client_id=client_id,
+                                     client_secret=client_secret, redirect_uri=redirect_uri)
+    drive = get_object_or_404(Drive, pk=request.session.get('drive_id'))
+    drive.access_token = tokens.get('access_token')
+    drive.refresh_token = tokens.get('get_refresh_token')
+    drive.save()
+    if category == 'onedrive':
+        scheduler.add_job(
+            refresh_onedrive_token_by_id,
+            trigger=IntervalTrigger(seconds=1800),
+            id='refresh_onedrive_token_every_1800s',
+            args=(drive.id,)
+        )
+    elif category == 'baidu':
+        scheduler.add_job(
+            refresh_baidudisk_token_by_id,
+            trigger=IntervalTrigger(seconds=1296000),
+            id='refresh_baidudisk_token_every_30d',
+            args=(drive.id,)
+        )
     return redirect(reverse('storage:disks'))
 
 
@@ -201,7 +213,7 @@ def upload(request):
 def clear_cache(request, drive_slug, path):
     drive = get_object_or_404(Drive, slug=drive_slug)
     absolute_path = str(PurePath(drive.root, path).as_posix())
-    cache_name = drive_slug+'-'+absolute_path
+    cache_name = drive_slug + '-' + absolute_path
     if cache.get(cache_name):
         cache.delete(cache_name)
     return redirect(reverse('storage:list_files', args=(drive_slug, path)))

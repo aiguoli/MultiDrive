@@ -23,7 +23,7 @@ class Drive(models.Model):
     client_id = models.TextField('client_id', null=True, blank=True)
     client_secret = models.TextField('client_secret', null=True, blank=True)
     access_token = models.TextField('access_token')
-    refresh_token = models.TextField('refresh_token')
+    refresh_token = models.TextField('get_refresh_token')
     category = models.ForeignKey(Category, verbose_name='分类', on_delete=models.CASCADE)
     created = models.DateTimeField('创建时间', default=timezone.now)
     updated = models.DateTimeField('更新时间', auto_now=True)

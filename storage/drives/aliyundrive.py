@@ -18,16 +18,16 @@ file_temporarily_remove_url = '/recyclebin/trash'
 
 def refresh_token(refresh_token):
     """
-    :return access_token refresh_token
+    :return access_token get_refresh_token
     """
-    # Notice that: refresh_token should be taken in web login url ('passport.aliyundrive.com/newlogin/sms/login.do')
-    # by mobile verify code then do base64 decoding for the 'bizExt', the refresh_token of the result is what you need
+    # Notice that: get_refresh_token should be taken in web login url ('passport.aliyundrive.com/newlogin/sms/login.do')
+    # by mobile verify code then do base64 decoding for the 'bizExt', the get_refresh_token of the result is what you need
     # otherwise, aliyundrive' s referer policy will destroy this script
     # url = 'https://websv.aliyundrive.com/token/refresh'   # web version
     url = 'https://auth.aliyundrive.com/v2/account/token'   # mobile version
     data = {
-        'grant_type': 'refresh_token',
-        'refresh_token': refresh_token
+        'grant_type': 'get_refresh_token',
+        'get_refresh_token': refresh_token
     }
     data = json.dumps(data)
     response = requests.post(url, data=data).json()

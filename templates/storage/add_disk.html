@@ -80,6 +80,7 @@
             const client_id = document.getElementById('client_id');
             const client_secret = document.getElementById('client_secret');
             switch (driveType) {
+                case 'baidu':
                 case 'onedrive':
                     invisible(refresh_token);
                     visible(client_id);
