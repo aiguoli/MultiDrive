@@ -22,12 +22,41 @@ MultiDrive是一款云盘管理程序，支持像oneindex那样列出云盘文�
 - [ ] Oracle
 
 # 安装方法
+
+下述方法仅作示例，程序实际运行环境为python>=3.8， django>=3.0，MySQL>=5.7
+
 ```shell
+下载源码
+git clone https://github.com/aiguoli/MultiDrive.git
+```
+
+```shell
+虚拟环境
+python3 -m venv multi-venv
+source multi-venv/bin/activate
+```
+
+```shell
+安装依赖
 pip3 install -r requirements.txt
 pip3 install uwsgi
 ```
 ```shell
-uwsgi --http :8080 --chdir /path/to/your/MultiDrive -w multi.wsgi
+修改MultiDrive/settings.py
+`9`~`11`行改为
+- DEBUG = False
+- ALLOWED_HOSTS = ['*']
+
+`78`~`87`行，改成你的数据库
+```
+
+```shell
+python3 manage.py migrate
+python3 manage.py creatsuperuser
+```
+
+```shell
+uwsgi --http :8080 --chdir /path/to/your/MultiDrive -w MultiDrive.wsgi
 ```
 
 # 截图
@@ -50,6 +79,7 @@ uwsgi --http :8080 --chdir /path/to/your/MultiDrive -w multi.wsgi
 - [ ] 文件中转站，类似于transfer.office.com
 - [ ] 在线预览更多文件类型 
 - [ ] 定时备份
+- [ ] 生成文件树
 
 # 开发状态
 还在开发完善，熟悉Django的可以搭建起来尝尝鲜...
