@@ -25,7 +25,6 @@ INSTALLED_APPS = [
     'account',
     'storage',
     'tailwind',
-    'theme',
 ]
 
 MIDDLEWARE = [
