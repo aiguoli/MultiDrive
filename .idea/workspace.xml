@@ -3,10 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="5ec19975-4d2b-40d9-92b9-6ed9aa92a79d" name="默认变更列表" comment=":memo:Update README.md">
       <change afterPath="$PROJECT_DIR$/.idea/shelf/在变基之前未提交的更改_[默认变更列表]/shelved.patch" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MultiDrive/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/MultiDrive/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MultiDrive/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/MultiDrive/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/uploads/20f9d2ffce82d218013e4d5dfad0ef27.djcache" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/uploads/2dfccbc5c2ffec7ff788874f941bc6f4.djcache" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/uploads/2e745499727cccfff07136e87ce6b558.djcache" beforeDir="false" />
@@ -58,6 +57,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_MARK_IGNORED_FILES_AS_EXCLUDED" value="true" />
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
@@ -271,7 +271,7 @@
       <workItem from="1627736768093" duration="325000" />
       <workItem from="1627737221669" duration="7244000" />
       <workItem from="1628687345364" duration="1677000" />
-      <workItem from="1628773840068" duration="3885000" />
+      <workItem from="1628773840068" duration="6133000" />
     </task>
     <task id="LOCAL-00001" summary=":sparkles:Convert files in a specific format to PDF in just one click">
       <created>1623986138288</created>
@@ -364,7 +364,14 @@
       <option name="project" value="LOCAL" />
       <updated>1628833392451</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary=":memo:Update README.md">
+      <created>1628834529316</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1628834529316</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
