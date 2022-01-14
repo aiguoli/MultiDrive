@@ -127,22 +127,20 @@ def refresh_token(request, drive_id):
 
 
 # File operation
-def list_files(request, drive_slug, path=''):
-    if 'preview' in request.GET:
-        return preview(request, path, drive_slug)
-    if 'refresh' in request.GET:
-        return refresh_db(request, drive_slug, path)
+def list_files(request):
+    file_path = request.GET.get('path')
+    drive_slug = request.GET.get('drive')
 
     drive = get_object_or_404(Drive, slug=drive_slug)
-    absolute_path = PurePosixPath(drive.root, path)
+    absolute_path = PurePosixPath(drive.root, file_path)
     category = drive.category.name.lower()
 
     if category == 'local':
         root = Path(settings.LOCALE_STORAGE_PATH, drive.root)
-        full_path = root / path
+        full_path = root.joinpath(file_path[1:])
         if full_path.is_file():
-            return download(request, full_path)
-        context = local.get_context(drive, path)
+            return download(request)
+        context = local.get_context(drive, file_path)
     else:
         files = File.objects.filter(drive_id=drive.id, parent_path=absolute_path)
         parent_folder = File.objects.filter(drive_id=drive.id, parent_path=absolute_path.parent,
@@ -156,12 +154,15 @@ def list_files(request, drive_slug, path=''):
             'files': files,
             'drive_id': drive.id,
             'drive_slug': drive.slug,
-            'root': path
+            'root': file_path
         }
     return render(request, 'storage/list.html', context)
 
 
-def preview(request, path, drive_slug):
+def preview(request):
+    path = request.GET.get('path')
+    drive_slug = request.GET.get('drive')
+
     drive = get_object_or_404(Drive, slug=drive_slug)
     full_path = PurePosixPath(drive.root, path)
     category = drive.category.name.lower()
@@ -190,15 +191,22 @@ def preview(request, path, drive_slug):
     return render(request, 'storage/preview.html', context=context)
 
 
-def download(request, path):
+def download(request):
     # download local file
-    file = open(path, 'rb')
+    path = request.GET.get('path')
+    drive_slug = request.GET.get('drive')
+
+    drive = get_object_or_404(Drive, slug=drive_slug)
+    file_path = Path(settings.LOCALE_STORAGE_PATH, drive.root, path[1::])
+    file = open(file_path, 'rb')
     response = FileResponse(file)
     return response
 
 
 @login_required
-def delete(request, drive_id, file_id):
+def delete(request):
+    drive_id = request.POST.get('drive_id')
+    file_id = request.POST.get('file_id')
     if request.method == 'POST':
         picker.delete_file(drive_id, file_id)
         return redirect(request.META.get('HTTP_REFERER'))

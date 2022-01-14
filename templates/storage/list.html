@@ -42,7 +42,7 @@
                  <tr>
                     <td>
                         <a {% if not file.is_dir %}target="_blank"{% endif %}
-                           href="{% url 'storage:list_files' drive_slug %}{{ root }}{% if root != '' %}/{% endif %}{{ file.name }}{% if not file.is_dir %}?preview{% endif %}">
+                           href="{{ file.url }}">
                             {% if file.is_dir %}
                             <svg class="w-4 h-4 inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                                 <path fill="none" d="M0 0h24v24H0z"></path>
@@ -67,7 +67,7 @@
                                data-file-id="{{ file.id }}"
                                onclick="changeFileId(this)">加密</a>
                         {% endif %}
-                        <form method="post" action="{% url 'storage:delete' drive_id file.id %}" class="inline">
+                        <form method="post" action="{% url 'storage:delete' %}" class="inline">
                             {% csrf_token %}
                             <button class="btn btn-sm btn-error" type="submit" onclick="return confirm('Are you sure?');">
                                 <span class="text-white">删除</span>

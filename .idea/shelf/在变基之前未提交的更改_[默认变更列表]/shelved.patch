@@ -1,0 +1,27 @@
+Index: storage/drives/googledrive.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import requests\r\nimport json\r\n\r\nbase_url = 'https://accounts.google.com/o/oauth2/v2/auth'\r\nauth_url = 'https://accounts.google.com/o/oauth2/v2/auth'\r\n\r\nclient_id = '216440066284-4rc0jvuh02q8hfd5fgev4ris01rqq8ei.apps.googleusercontent.com'\r\nclient_secret = '5RIx-WERt77b2OD_DDXZDBju'\r\n\r\n\r\ndef get_login_code(client_id, redirect_uri):\r\n    auth_data = {\r\n        'client_id': client_id,\r\n        'redirect_uri': redirect_uri,\r\n        'response_type': 'code',\r\n        'scope': 'https://www.googleapis.com/auth/drive.file',\r\n        'access_type': 'offline',\r\n        'state': 'sth that could be converted'\r\n    }\r\n    response = requests.get(auth_url, params=json.dumps(auth_data)).json()\r\n    print(response)\r\n    return response\r\n\r\n\r\nget_login_code(client_id, client_secret)\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/storage/drives/googledrive.py b/storage/drives/googledrive.py
+--- a/storage/drives/googledrive.py	(revision 708ec80cc5d9c452d9dd9714e3e90688813d1a11)
++++ b/storage/drives/googledrive.py	(date 1625052470898)
+@@ -4,9 +4,6 @@
+ base_url = 'https://accounts.google.com/o/oauth2/v2/auth'
+ auth_url = 'https://accounts.google.com/o/oauth2/v2/auth'
+ 
+-client_id = '216440066284-4rc0jvuh02q8hfd5fgev4ris01rqq8ei.apps.googleusercontent.com'
+-client_secret = '5RIx-WERt77b2OD_DDXZDBju'
+-
+ 
+ def get_login_code(client_id, redirect_uri):
+     auth_data = {
+@@ -20,6 +17,3 @@
+     response = requests.get(auth_url, params=json.dumps(auth_data)).json()
+     print(response)
+     return response
+-
+-
+-get_login_code(client_id, client_secret)

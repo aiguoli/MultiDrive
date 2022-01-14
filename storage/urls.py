@@ -12,7 +12,8 @@ urlpatterns = [
     path('callback/', callback, name='callback'),
     path('disks/', disks, name='disks'),
     path('password/', change_file_password, name='change_file_password'),
-    path('delete/<int:drive_id>/<str:file_id>/', delete, name='delete'),
-    path('<str:drive_slug>/', list_files, name='list_files'),
-    path('<str:drive_slug>/<path:path>/', list_files, name='list_files'),
+    path('delete/', delete, name='delete'),
+    path('files/', list_files, name='list_files'),
+    path('download/', download, name='download_file'),
+    path('preview/', preview, name='preview')
 ]

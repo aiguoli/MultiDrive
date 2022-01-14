@@ -27,7 +27,7 @@
         {% endif %}
         <span class="font-lg font-bold">文件下载</span>
         <div class="flex inline-flex space-x-3">
-            <textarea class="textarea h-auto textarea textarea-bordered w-4/5" id="downloadUrl" readonly>{{ request.scheme }}://{{ request.META.HTTP_HOST }}{{ request.META.PATH_INFO }}</textarea>
+            <textarea class="textarea h-auto textarea textarea-bordered w-4/5" id="downloadUrl" readonly>{{ request.scheme }}://{{ request.META.HTTP_HOST }}/download?{{ request.META.QUERY_STRING }}</textarea>
             <div class="w-1/5 flex justify-around">
                 <button class="btn btn-primary" onclick="copyUrl()">Copy</button>
                 <a href="#qrcode" class="btn btn-primary">Qrcode</a>

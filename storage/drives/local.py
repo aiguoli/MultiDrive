@@ -29,8 +29,9 @@ def delete_file(path):
 
 def get_context(drive, path):
     root = Path(settings.LOCALE_STORAGE_PATH, drive.root)
-    full_path = root / path
-
+    full_path = root.joinpath(path[1::])
+    if path == '/':
+        full_path = root
     walk_files = [i for i in full_path.iterdir()]
     readme = False
     for file in walk_files:
@@ -40,7 +41,7 @@ def get_context(drive, path):
         'drive_id': drive.id,
         'drive_slug': drive.slug,
         'breadcrumbs': generate_breadcrumbs(drive.slug, path),
-        'files': [path_attr(root, drive.slug, i) for i in walk_files],
+        'files': [path_attr(drive.slug, root, i) for i in walk_files],
         'readme': readme,
     }
     return context

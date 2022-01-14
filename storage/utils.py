@@ -22,17 +22,21 @@ def timestamp2datetime(timestamp):
     return datetime.datetime.fromtimestamp(timestamp)
 
 
-def path_attr(root, drive_slug, full_path):
+def path_attr(drive_slug, root, full_path):
     path_info = full_path.stat()
     basename = full_path.name
     relative_path = full_path.relative_to(root)
+    if full_path.is_file():
+        url = reverse('storage:preview') + '?path={}&drive={}'.format('/'+relative_path.as_posix(), drive_slug)
+    else:
+        url = reverse('storage:list_files') + '?path={}&drive={}'.format('/'+relative_path.as_posix(), drive_slug)
     information = {
         'name': basename,
         'size': convert_size(path_info.st_size),
-        'modified': convert_time(path_info.st_mtime),
+        'updated': convert_time(path_info.st_mtime),
         'is_dir': True if full_path.is_dir() else False,
         'id': relative_path.as_posix(),
-        'url': reverse('storage:list_files', args=(drive_slug, relative_path.as_posix()))
+        'url': url
     }
     return information
 
@@ -59,7 +63,7 @@ def convert_time(timestamp):
 
 def file_type(prefix):
     file_types = {
-        'text': ['txt', 'html', 'md', 'py', 'php', 'cpp'],
+        'text': ['txt', 'html', 'md', 'py', 'php', 'cpp', 'c', 'cpp'],
         'image': ['jpg', 'jpeg', 'png', 'gif', 'ico', 'jpe', 'jfif', 'tif', 'tiff', 'heic', 'webp', 'bmp'],
         'office': ['ppt', 'pptx', 'pptm', 'doc', 'docx', 'xls'],
         'video': ['mp4', 'webm', 'avi', 'mpg', 'mpeg', 'rm', 'rmvb', 'mov', 'wmv', 'mkv', 'asf'],
@@ -127,7 +131,7 @@ def get_readme(url):
 
 def generate_breadcrumbs(drive_slug, path):
     path = PurePosixPath(path)
-    home = {'path': 'Home', 'url': reverse('storage:list_files', args=(drive_slug,))}
+    home = {'path': 'Home', 'url': reverse('storage:list_files') + '?path={}&drive={}'.format('/', drive_slug)}
     if str(path) == '/':
         return [home]
 
@@ -138,7 +142,7 @@ def generate_breadcrumbs(drive_slug, path):
         temp += '/' + i
         res.append({
             'path': i,
-            'url': reverse('storage:list_files', args=(drive_slug, temp))
+            'url': reverse('storage:list_files') + '?path={}&drive={}'.format(temp, drive_slug)
         })
     return res
 
